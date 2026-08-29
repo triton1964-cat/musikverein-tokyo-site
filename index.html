@@ -3,206 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>東京オーケストラ コンサート情報 / Tokyo Orchestra Concerts</title>
+<title>Musikverein.Tokyo — 東京オーケストラ公演情報 / Tokyo Orchestra Concerts</title>
+<meta name="description" content="東京の主要オーケストラの公演情報を一望できるガイド。Concert listings for Tokyo's professional orchestras.">
 <style>
   :root {
-    --bg: #0f0f14;
-    --surface: #1a1a24;
-    --surface2: #22222f;
-    --border: #2e2e42;
-    --accent: #c8a96e;
-    --accent2: #8b6fd4;
-    --text: #e8e8f0;
-    --text-muted: #888899;
-    --radius: 10px;
-    --tag-h: 36px;
+    /* ブランドカラー #3A2D25 を基調に、生成りの紙面を組み立てる */
+    --brand: #3A2D25;
+    --bg: #FAF7F2;          /* 生成り */
+    --surface: #FFFFFF;
+    --surface2: #F2EDE4;
+    --border: #E4DACB;
+    --rule: #D8CCBA;
+    --text: #3A2D25;
+    --text-muted: #8A7A6B;
+    --accent: #8C6B3F;      /* 真鍮 — 時刻や強調に少量だけ */
+    --radius: 4px;
+    --tag-h: 34px;
+    --measure: 1060px;
+
+    --serif: 'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, 'Noto Serif JP', Georgia, 'Times New Roman', serif;
+    --sans: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Segoe UI', system-ui, sans-serif;
+
+    /* 楽団の色は ORCHES（JS側）で定義。ここは参考値ではなく実体を持たない */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { -webkit-text-size-adjust: 100%; }
+
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Segoe UI', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.75;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
+
+  a { color: inherit; }
 
   /* ── Header ── */
   header {
-    background: linear-gradient(135deg, #1a1228 0%, #0f1a2e 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 24px 20px 20px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
+    padding: 56px 24px 40px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
   }
 
   .header-inner {
-    max-width: 960px;
+    max-width: var(--measure);
     margin: 0 auto;
+    position: relative;
   }
 
-  .header-top {
+  .top-nav {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
   }
 
-  /* ロゴは白ヌキ版。ヘッダーが濃色固定のため明版は使わない */
+  .nav-link {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 6px 4px;
+    margin-right: 8px;
+    border-bottom: 1px solid transparent;
+    transition: color .2s, border-color .2s;
+  }
+  .nav-link:hover { color: var(--brand); border-bottom-color: var(--rule); }
+
+  /* ロゴは明版。白基調のため白ヌキ版は使わない */
+  .brand { text-align: center; }
+
   .site-logo {
     display: block;
-    width: clamp(200px, 46vw, 292px);
+    width: clamp(230px, 54vw, 360px);
     height: auto;
-    margin-bottom: 10px;
+    margin: 0 auto 20px;
   }
 
   .site-title {
-    font-size: clamp(16px, 4vw, 22px);
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    color: var(--accent);
+    font-family: var(--serif);
+    font-size: clamp(14px, 3.4vw, 17px);
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
   }
-  .site-title span { color: var(--text-muted); font-weight: 400; font-size: 0.75em; display: block; margin-top: 2px; }
+  .site-title span { display: block; margin-top: 4px; letter-spacing: 0.14em; }
 
-  .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .stats {
+    font-family: var(--serif);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    margin-top: 18px;
+  }
+  .stats strong { color: var(--brand); font-weight: 600; }
 
   /* Lang toggle */
   .lang-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
+    background: transparent;
+    border: 1px solid var(--rule);
     color: var(--text-muted);
-    padding: 6px 14px;
-    border-radius: 20px;
+    padding: 5px 13px;
+    border-radius: 2px;
     cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
     transition: all .2s;
   }
-  .lang-btn.active { background: var(--accent); border-color: var(--accent); color: #1a1000; }
-  .lang-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+  .lang-btn.active { background: var(--brand); border-color: var(--brand); color: var(--bg); }
+  .lang-btn:hover:not(.active) { border-color: var(--brand); color: var(--brand); }
 
-  /* Stats badge */
-  .stats {
-    color: var(--text-muted);
-    font-size: 12px;
-    margin-top: 8px;
+  /* ── Filters（スクロール追従） ── */
+  .filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250, 247, 242, .93);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    padding: 16px 24px;
   }
-  .stats strong { color: var(--accent); }
 
-  /* ── Filters ── */
   .filters {
-    max-width: 960px;
-    margin: 16px auto 0;
-    padding: 0 20px;
+    max-width: var(--measure);
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
   .filter-label {
-    font-size: 11px;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    white-space: nowrap;
   }
 
   .filter-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    flex: 1;
   }
 
   .chip {
     height: var(--tag-h);
     padding: 0 14px;
-    border-radius: 18px;
+    border-radius: 2px;
     border: 1px solid var(--border);
-    background: var(--surface2);
+    background: var(--surface);
     color: var(--text-muted);
     cursor: pointer;
+    font-family: var(--sans);
     font-size: 12px;
-    font-weight: 500;
+    letter-spacing: 0.02em;
     white-space: nowrap;
-    transition: all .2s;
+    transition: all .18s;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
   }
-  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip:hover { border-color: var(--brand); color: var(--brand); }
   .chip.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #1a1000;
-    font-weight: 700;
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--bg);
   }
   .chip .count {
-    background: rgba(0,0,0,.25);
-    border-radius: 10px;
-    padding: 1px 7px;
-    font-size: 11px;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
   }
-  .chip.active .count { background: rgba(0,0,0,.2); }
+  .chip.active .count { color: rgba(250, 247, 242, .72); }
 
   /* ── Main ── */
   main {
-    max-width: 960px;
-    margin: 24px auto 60px;
-    padding: 0 20px;
+    max-width: var(--measure);
+    margin: 56px auto 88px;
+    padding: 0 24px;
   }
 
-  /* No-result */
   .no-result {
     text-align: center;
-    padding: 60px 0;
+    padding: 96px 0;
     color: var(--text-muted);
     display: none;
+    font-family: var(--serif);
   }
-  .no-result svg { opacity: .3; margin-bottom: 12px; }
+  .no-result svg { opacity: .25; margin-bottom: 16px; }
 
-  /* ── Month group heading ── */
-  .month-group { margin-bottom: 32px; }
+  /* ── Month group ── */
+  .month-group { margin-bottom: 64px; }
 
   .month-heading {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-    margin-bottom: 12px;
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
   }
-  .month-heading .month-en { font-size: 18px; color: var(--text); }
-  .month-heading .month-count { margin-left: auto; font-size: 11px; }
+  .month-heading .month-en {
+    font-family: var(--serif);
+    font-size: clamp(19px, 3.6vw, 23px);
+    letter-spacing: 0.08em;
+    color: var(--brand);
+  }
+  .month-heading .month-count {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
 
   /* ── Concert card ── */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     overflow: hidden;
-    transition: border-color .2s, transform .15s;
+    transition: border-color .2s, box-shadow .2s;
     display: grid;
-    grid-template-columns: 5px 1fr;
+    grid-template-columns: 4px 1fr;
   }
-  .card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .card:hover {
+    border-color: var(--rule);
+    box-shadow: 0 2px 14px rgba(58, 45, 37, .07);
+  }
 
-  /* left accent stripe = orchestra color */
-  .card-stripe { width: 5px; }
+  .card-stripe { width: 4px; }
 
   .card-body {
-    padding: 14px 16px;
+    padding: 22px 26px;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 4px 12px;
+    gap: 6px 20px;
   }
 
   .card-left { min-width: 0; }
@@ -210,73 +256,78 @@
   .card-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 14px;
     flex-wrap: wrap;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
   }
 
   .orch-tag {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 4px;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    padding: 3px 9px;
+    border-radius: 2px;
     white-space: nowrap;
   }
 
   .date-block {
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 7px;
   }
   .date-day {
-    font-size: 22px;
-    font-weight: 800;
+    font-family: var(--serif);
+    font-size: 27px;
     line-height: 1;
-    color: var(--text);
+    color: var(--brand);
     font-variant-numeric: tabular-nums;
   }
   .date-meta {
     font-size: 11px;
     color: var(--text-muted);
-    line-height: 1.3;
+    line-height: 1.35;
+    letter-spacing: 0.04em;
   }
 
   .concert-time {
     font-size: 12px;
     color: var(--accent);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
   }
 
   .detail-row {
     display: flex;
     align-items: flex-start;
-    gap: 6px;
-    font-size: 13px;
-    margin-top: 4px;
-    color: var(--text);
+    gap: 9px;
+    font-size: 14px;
+    margin-top: 5px;
   }
-  .detail-row .icon { color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
+  .detail-row .icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    /* 「会場」と "Conductor" で必要幅が違うため、固定せず下限だけ揃える */
+    min-width: 4.6em;
+    padding-top: 3px;
+  }
   .detail-row .val { min-width: 0; word-break: break-word; }
-  .detail-row .val.muted { color: var(--text-muted); font-size: 12px; }
+  .detail-row .val.muted { color: var(--text-muted); font-size: 13px; }
 
   .program-list {
     list-style: none;
-    margin-top: 2px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--surface2);
   }
   .program-list li {
-    padding: 1px 0;
+    padding: 2px 0 2px 1.1em;
     color: var(--text-muted);
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 12.5px;
+    text-indent: -1.1em;
+    line-height: 1.65;
   }
-  .program-list li::before { content: '♩ '; color: var(--border); }
+  .program-list li::before { content: '—\00a0'; color: var(--rule); }
 
   /* Ticket button */
   .card-right {
@@ -285,63 +336,109 @@
     align-items: flex-end;
     justify-content: center;
     gap: 8px;
-    min-width: 90px;
+    min-width: 96px;
   }
 
   .ticket-btn {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 6px 12px;
-    border-radius: 20px;
+    border: 1px solid var(--rule);
+    color: var(--brand);
+    padding: 8px 15px;
+    border-radius: 2px;
     text-decoration: none;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     white-space: nowrap;
     transition: all .2s;
   }
-  .ticket-btn:hover { background: var(--accent); color: #1a1000; }
+  .ticket-btn:hover { background: var(--brand); border-color: var(--brand); color: var(--bg); }
 
-  /* ── Orchestra colors ── */
-  :root {
-    --c0: #e8a040; /* NHK */
-    --c1: #5ba8e8; /* TPO */
-    --c2: #52c279; /* TSO */
-    --c3: #e85b8a; /* TMSO */
-    --c4: #a855f7; /* NJP */
-    --c5: #f97316; /* Yomikyo */
-    --c6: #14b8a6; /* JapanPhil */
-    --c7: #e84040; /* CityPhil */
+  /* ── About ── */
+  .about {
+    /* 追従するフィルタバーの下にアンカー先が潜り込まないように */
+    scroll-margin-top: 72px;
+    border-top: 1px solid var(--rule);
+    background: var(--surface);
+    padding: 88px 24px 96px;
   }
+
+  .about-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    font-family: var(--serif);
+  }
+
+  .about h2 {
+    font-size: clamp(19px, 4vw, 24px);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .about-rule {
+    width: 44px;
+    height: 1px;
+    background: var(--rule);
+    margin: 0 auto 40px;
+  }
+
+  .about p {
+    font-size: 15.5px;
+    line-height: 2.15;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.9em;
+  }
+  .about p:last-child { margin-bottom: 0; }
+  .about p em { font-style: italic; }
+  .about .lead { font-size: 17.5px; letter-spacing: 0.05em; }
 
   /* ── Footer ── */
   footer {
     text-align: center;
     color: var(--text-muted);
-    font-size: 11px;
-    padding: 20px;
-    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    padding: 40px 24px 48px;
+    border-top: 1px solid var(--rule);
+    line-height: 2;
+  }
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    color: var(--brand);
+    display: block;
+    margin-bottom: 10px;
   }
 
   /* ── Responsive ── */
-  @media (max-width: 600px) {
-    header { padding: 16px 16px 12px; }
-    .filters { padding: 0 16px; }
-    main { padding: 0 16px; margin-top: 16px; }
-    .card-body { grid-template-columns: 1fr; }
-    .card-right { flex-direction: row; justify-content: flex-start; margin-top: 10px; align-items: center; }
-    .date-day { font-size: 18px; }
-    .chip { height: 30px; padding: 0 10px; font-size: 11px; }
-    .program-list li { white-space: normal; }
+  @media (max-width: 640px) {
+    body { font-size: 14px; }
+    header { padding: 32px 18px 26px; }
+    .top-nav { margin-bottom: 20px; }
+    .filter-bar { padding: 12px 18px; }
+    .filters { gap: 10px; }
+    main { padding: 0 18px; margin: 36px auto 60px; }
+    .card-body { grid-template-columns: 1fr; padding: 18px 18px; }
+    .card-right { flex-direction: row; justify-content: flex-start; margin-top: 14px; align-items: center; }
+    .date-day { font-size: 23px; }
+    .chip { height: 30px; padding: 0 11px; font-size: 11.5px; }
+    .detail-row .icon { min-width: 4.2em; }
+    .month-group { margin-bottom: 44px; }
+    .about { padding: 56px 18px 60px; }
+    .about p { font-size: 15px; line-height: 2; }
   }
 
-  /* ── Transition for filter ── */
-  .card { animation: fadeIn .2s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  .card { animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -352,59 +449,71 @@
 
 <header>
   <div class="header-inner">
-    <div class="header-top">
-      <div>
-        <img class="site-logo" src="assets/logo-horizontal-white.svg"
-             alt="Musikverein.Tokyo" width="456" height="73">
-        <div class="site-title">
-          東京オーケストラ コンサート情報
-          <span id="subtitle-en" style="display:none">Tokyo Orchestra Concert Guide</span>
-        </div>
-        <div class="stats">
-          <span id="stats-text"></span>
-        </div>
+    <nav class="top-nav">
+      <a class="nav-link" id="nav-about" href="#about">このサイトについて</a>
+      <button class="lang-btn active" id="btn-ja" onclick="setLang('ja')">日本語</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+    </nav>
+    <div class="brand">
+      <img class="site-logo" src="assets/logo-horizontal.svg"
+           alt="Musikverein.Tokyo" width="456" height="73">
+      <div class="site-title">
+        <span id="subtitle-ja">東京オーケストラ公演情報</span>
+        <span id="subtitle-en" style="display:none">Tokyo Orchestra Concert Guide</span>
       </div>
-      <div class="header-controls">
-        <button class="lang-btn active" id="btn-ja" onclick="setLang('ja')">日本語</button>
-        <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+      <div class="stats">
+        <span id="stats-text"></span>
       </div>
     </div>
   </div>
+</header>
 
+<div class="filter-bar">
   <div class="filters">
     <div class="filter-label" id="filter-label">楽団で絞り込み</div>
     <div class="filter-chips" id="chips"></div>
   </div>
-</header>
+</div>
 
 <main id="main">
   <div class="no-result" id="no-result">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     <p id="no-result-text">該当するコンサートが見つかりませんでした</p>
   </div>
   <div id="list"></div>
 </main>
 
+<section class="about" id="about">
+  <div class="about-inner">
+    <h2 id="about-title"></h2>
+    <div class="about-rule"></div>
+    <div id="about-body"></div>
+  </div>
+</section>
+
 <footer>
-  <span id="footer-text">データ取得: concerts.json &nbsp;|&nbsp; このページはスクレイピングデータに基づく参考情報です</span>
+  <span class="footer-brand">Musikverein.Tokyo</span>
+  <span id="footer-text"></span>
 </footer>
 
 <script>
 // ── Load data ──
 async function loadData() {
-  return {"scraped_at":"2026-08-29T03:31:56.371Z","total":227,"summary":[{"orchestra":"NHK交響楽団","count":9},{"orchestra":"東京フィルハーモニー交響楽団","count":36,"stale":true,"error":"取得0件"},{"orchestra":"東京交響楽団","count":19},{"orchestra":"東京都交響楽団","count":30},{"orchestra":"新日本フィルハーモニー交響楽団","count":9},{"orchestra":"読売日本交響楽団","count":47},{"orchestra":"日本フィルハーモニー交響楽団","count":52},{"orchestra":"東京シティ・フィルハーモニック","count":25}],"concerts":[{"orchestra":"NHK交響楽団","date":"2026-08-30","time":"16:00","venue":"刈谷市総合文化センター アイリス","conductor":"キンボー・イシイ","program":["ドビュッシー（ビュセール編）／小組曲","モーツァルト／ヴァイオリン協奏曲 第5番 イ長調 K. 219「トルコ風」","ビゼー／「カルメン」組曲（キンボー・イシイ版）"],"ticket_url":"https://www.nhkso.or.jp/concert/20260830.html?pdate=20260830"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-08-30","time":"17:00","venue":"サントリーホール 大ホール","conductor":"阿部 加奈子","program":["〇第34回芥川也寸志サントリー作曲賞受賞記念／サントリー芸術財団委嘱作品 石川健人：『嗅覚受容体』2台のキーボードとオーケストラのための（2026）［世界初演］ キーボード：秋山友貴／天野由唯 〇第36回芥川也寸志サントリー作曲賞候補作品（五十音順／演奏順未定） 金田望：2群のオーケストラのための『肌と布の遊び』（2024） 中橋祐紀：『And I sole ear（そして私はただ唯一の耳となる）』（2025） ソプラノ:日野祐希 エレクトロニクス:今井慎太郎 山本哲也：『戸外の鳥たちへのトリビュート』合唱と室内オーケストラのための（2025） 東京混声合唱団"],"ticket_url":"https://www.njp.or.jp/concerts/260830"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-08-30","time":"14:00","venue":"長野市芸術館","conductor":"松井慶太","program":["プロコフィエフ：組曲『ロミオとジュリエット』より モンタギュー家とキャピュレット家","ビゼー：アルルの女 第２組曲より メヌエット ムソルグスキー（ラヴェル編曲）：組曲『展覧会の絵』より 古城 加藤昌則：《","ドビュッシー：ラプソディ （サクソフォン・ソロ：上野耕平）","ラヴェル： ボレロ"],"ticket_url":"https://japanphil.or.jp/concert/20260830/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-08-30","time":"13:00","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/lecorsaire2026/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-01","time":"19:00","venue":"サントリーホール 大ホール","conductor":"大友直人","program":["バッハ：フーガ ト短調「小フーガ」 BWV578（オルガン独奏︓⻑井 浩美）","ベートーヴェン：ヴァイオリン協奏曲 ニ⻑調 op.61（ソリスト︓ 辻 彩奈）","ブラームス：交響曲第2番 ニ⻑調 op.73"],"ticket_url":"https://www.njp.or.jp/concerts/260901"},{"orchestra":"東京交響楽団","date":"2026-09-02","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"沼尻竜典","program":["ラヴェル：ピアノ協奏曲ト長調（小井土文哉）","シューマン：ピアノ協奏曲イ短調 op.54（谷 昂登）","ベートーヴェン：ピアノ協奏曲第4番ト長調 op.58（鈴木愛美）"],"ticket_url":"https://tokyosymphony.jp/concert/61423/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-02","time":"14:00","venue":"サントリーホール","conductor":"角田鋼亮","program":["サン=サーンス：序奏とロンド・カプリツィオーソ op.28 マスネ：タイスの瞑想曲 My Favorite Songs（","ベートーヴェン：交響曲第6番《田園》 ヘ長調 op.68"],"ticket_url":"https://japanphil.or.jp/concert/20260902/"},{"orchestra":"NHK交響楽団","date":"2026-09-03","time":"19:00","venue":"サントリーホール","conductor":"尾高忠明","program":["シベリウス／アンダンテ・フェスティーヴォ","プロコフィエフ／ヴァイオリン協奏曲 第2番 ト短調 作品63","チャイコフスキー／交響曲 第5番 ホ短調 作品64"],"ticket_url":"https://www.nhkso.or.jp/concert/20260903.html?pdate=20260903"},{"orchestra":"東京都交響楽団","date":"2026-09-03","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"大野和士","program":["ラフマニノフ：ピアノ協奏曲第3番 ニ短調 op.30","R.シュトラウス：交響詩《ドン・キホーテ》op.35*"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4088"},{"orchestra":"東京都交響楽団","date":"2026-09-04","time":"19:00","venue":"サントリーホール","conductor":"大野和士","program":["ラフマニノフ：ピアノ協奏曲第3番 ニ短調 op.30","R.シュトラウス：交響詩《ドン・キホーテ》op.35*"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4089"},{"orchestra":"NHK交響楽団","date":"2026-09-05","time":"15:00","venue":"仙台銀行ホール イズミティ21 大ホール","conductor":"尾高忠明","program":["シベリウス／アンダンテ・フェスティーヴォ","プロコフィエフ／ヴァイオリン協奏曲 第2番 ト短調 作品63","チャイコフスキー／交響曲 第5番 ホ短調 作品64"],"ticket_url":"https://www.nhkso.or.jp/concert/20260905.html?pdate=20260905"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-05","time":"14:00","venue":"サンパール荒川","conductor":"大井剛史","program":["シベリウス：ヴァイオリン協奏曲 ニ短調 ドヴォルジャーク：交響曲第9番《新世界より》 ホ短調"],"ticket_url":"https://japanphil.or.jp/concert/20260905/"},{"orchestra":"NHK交響楽団","date":"2026-09-06","time":"15:00","venue":"けんしん郡山文化センター 大ホール","conductor":"尾高忠明","program":["シベリウス／アンダンテ・フェスティーヴォ","プロコフィエフ／ヴァイオリン協奏曲 第2番 ト短調 作品63","チャイコフスキー／交響曲 第5番 ホ短調 作品64"],"ticket_url":"https://www.nhkso.or.jp/concert/20260906.html?pdate=20260906"},{"orchestra":"東京交響楽団","date":"2026-09-06","time":"11:00","venue":"サントリーホール","conductor":"","program":["プロコフィエフ：バレエ組曲「ロメオとジュリエット」から“モンタギュー家とキャピュレット家”*","グリーグ：抒情小品集 第9集から「ゆりかごの歌」（管弦楽版）","ストラヴィンスキー：バレエ組曲「火の鳥」から“王女たちのロンド”“魔王カスチェイの凶悪な踊り”","武満徹：波の盆 L.アンダ―ソン：セレナータ ファリャ：バレエ組曲「三角帽子」第2組曲から“粉屋の踊り”“終幕の踊り”"],"ticket_url":"https://tokyosymphony.jp/concert/58197/"},{"orchestra":"東京都交響楽団","date":"2026-09-06","time":"14:00","venue":"Hakuju Hall","conductor":"","program":["ロイター：5つの古い賛歌 Op.57 ヒンデミット：無伴奏ヴィオラ・ソナタ Op. 25-1 レフラー：夕べの調べ、白い月、ナイチンゲール 名田綾子：風の接線～メゾソプラノ、ヴィオラ、ピアノのための～ 詩：藤田晴央"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4153"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-06","time":"14:00","venue":"十文字チキンアンバーホール （久慈市文化会館） 大ホール","conductor":"永峰高志","program":["モーツァルト：ピアノ協奏曲第21番","ブルックナー：交響曲第4番「ロマンティック」"],"ticket_url":"https://www.njp.or.jp/concerts/260906"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-06","time":"14:00","venue":"東京芸術劇場","conductor":"大友直人","program":["モーツァルト：歌劇《皇帝ティートの慈悲》序曲 K.621","メンデルスゾーン：ヴァイオリン協奏曲 ホ短調 op.64","チャイコフスキー：ヴァイオリン協奏曲 ニ長調 op.35"],"ticket_url":"https://japanphil.or.jp/concert/20260906/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-08","time":"19:00","venue":"すみだトリフォニーホール 大ホール","conductor":"中田延亮","program":["第1部 渡辺貞夫カルテット 第2部 渡辺貞夫 meets 新日本フィル"],"ticket_url":"https://www.njp.or.jp/concerts/260908"},{"orchestra":"読売日本交響楽団","date":"2026-09-08","time":"19:00","venue":"サントリーホール","conductor":"ユライ・ヴァルチュハ","program":["マーラー：交響曲第6番 イ短調「悲劇的」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/661-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-09","time":"18:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-10","time":"18:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"東京都交響楽団","date":"2026-09-11","time":"19:00","venue":"東京芸術劇場 コンサートホール","conductor":"梅田俊明 ダンス","program":["グリーグ：組曲《ホルベアの時代より》 op.40 ラター：グローリア―混声合唱、金管楽器、打楽器とオルガンのための**","ラヴェル：組曲《マ・メール・ロワ》*[一部ダンス付き（演出振付／中尾洸太）]","ラヴェル：ボレロ*（演出振付／金森 穣）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4167"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-11","time":"14:00","venue":"すみだトリフォニーホール 大ホール","conductor":"沼尻竜典","program":["ラヴェル：組曲「マ・メール・ロワ」 Ravel:Ma mère l'Oye Suite","ラヴェル:クープランの墓（管弦楽版） Ravel:Le Tombeau de Couperin（orchestral s","ラヴェル：左手のためのピアノ協奏曲 ニ長調* Ravel:Le Concerto pour la main gauche","ラヴェル：「ダフニスとクロエ」第2組曲 Ravel:Daphnis et Chloé Suite No. 2"],"ticket_url":"https://www.njp.or.jp/concerts/260911"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-11","time":"19:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["ショスタコーヴィチ：交響曲第7番《レニングラード》 ハ長調 op.60"],"ticket_url":"https://japanphil.or.jp/concert/20260911/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-11","time":"18:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"NHK交響楽団","date":"2026-09-12","time":"18:00","venue":"NHKホール","conductor":"ファビオ・ルイージ","program":["― N響100年特別企画 ―","フランツ・シュミット／オラトリオ「7つの封印の書」（日本語字幕付き）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609A.html?pdate=20260912"},{"orchestra":"東京交響楽団","date":"2026-09-12","time":"11:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ロレンツォ・ヴィオッティ","program":["モーツァルト：交響曲 第38番 ニ長調 K. 504「プラハ」","シューベルト：交響曲 第2番 変ロ長調 D125"],"ticket_url":"https://tokyosymphony.jp/concert/59466/"},{"orchestra":"東京都交響楽団","date":"2026-09-12","time":"13:00","venue":"東京芸術劇場 プレイハウス","conductor":"","program":["サン＝サーンス：『動物の謝肉祭』より 「序奏と獅子王の行進曲」「象」「雌鶏と雄鶏」「亀」「化石」「白鳥」「終曲」 ワーク"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4173"},{"orchestra":"東京都交響楽団","date":"2026-09-12","time":"14:00","venue":"東京芸術劇場 シアターイースト","conductor":"","program":["エレナ・カッツ＝チェルニン（作曲）、スザンネ・フェリシタス・ヴォルフ（台本）：『しろくまの王さま ヴァレモンの物語』（日本語上演）"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202609"},{"orchestra":"東京都交響楽団","date":"2026-09-12","time":"15:00","venue":"東京芸術劇場 コンサートホール","conductor":"川瀬賢太郎","program":["すぎやまこういち：交響組曲『ドラゴンクエストⅤ』天空の花嫁 より「序曲のマーチ」 ロンビ：コペンハーゲンの蒸気機関車のギ","ビゼー：歌劇『カルメン』前奏曲 ♪指揮体験コーナー ロッシーニ：歌劇『セビリアの理髪師』序曲 ♪コンドルズによるダンス"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4168"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-12","time":"14:00","venue":"すみだトリフォニーホール 大ホール","conductor":"沼尻竜典","program":["ラヴェル：組曲「マ・メール・ロワ」 Ravel:Ma mère l'Oye Suite","ラヴェル:クープランの墓（管弦楽版） Ravel:Le Tombeau de Couperin（orchestral s","ラヴェル：左手のためのピアノ協奏曲 ニ長調* Ravel:Le Concerto pour la main gauche","ラヴェル：「ダフニスとクロエ」第2組曲 Ravel:Daphnis et Chloé Suite No. 2"],"ticket_url":"https://www.njp.or.jp/concerts/260912"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-12","time":"14:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["ショスタコーヴィチ：交響曲第7番《レニングラード》 ハ長調 op.60"],"ticket_url":"https://japanphil.or.jp/concert/20260912/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-12","time":"12:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"NHK交響楽団","date":"2026-09-13","time":"14:00","venue":"NHKホール","conductor":"ファビオ・ルイージ","program":["― N響100年特別企画 ―","フランツ・シュミット／オラトリオ「7つの封印の書」（日本語字幕付き）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609A.html?pdate=20260913"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-09-13","time":"14:00","venue":"Bunkamura オーチャードホール","conductor":"円光寺雅彦","program":["チャイコフスキー／ロココの主題による変奏曲*","ドヴォルザーク／交響曲第8番"],"ticket_url":"https://www.tpo.or.jp/concert/20260913-01.php"},{"orchestra":"東京交響楽団","date":"2026-09-13","time":"14:00","venue":"東京オペラシティコンサートホール","conductor":"ロレンツォ・ヴィオッティ","program":["モーツァルト：交響曲 第38番 ニ長調 K.504「プラハ」","シューベルト：交響曲 第2番 変ロ長調 D125"],"ticket_url":"https://tokyosymphony.jp/concert/57612/"},{"orchestra":"東京都交響楽団","date":"2026-09-13","time":"11:00","venue":"東京芸術劇場 コンサートホール","conductor":"川瀬賢太郎","program":["すぎやまこういち：交響組曲『ドラゴンクエストⅤ』天空の花嫁 より「序曲のマーチ」 ロンビ：コペンハーゲンの蒸気機関車のギ","ビゼー：歌劇『カルメン』前奏曲 ♪指揮体験コーナー ロッシーニ：歌劇『セビリアの理髪師』序曲 ♪コンドルズによるダンス"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4169"},{"orchestra":"東京都交響楽団","date":"2026-09-13","time":"13:00","venue":"東京芸術劇場 プレイハウス","conductor":"","program":["サン＝サーンス：『動物の謝肉祭』より 「序奏と獅子王の行進曲」「象」「雌鶏と雄鶏」「亀」「化石」「白鳥」「終曲」 ワーク"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4174"},{"orchestra":"東京都交響楽団","date":"2026-09-13","time":"14:00","venue":"東京芸術劇場 シアターイースト","conductor":"","program":["エレナ・カッツ＝チェルニン（作曲）、スザンネ・フェリシタス・ヴォルフ（台本）：『しろくまの王さま ヴァレモンの物語』（日本語上演"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202609"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-13","time":"13:30","venue":"佐渡中央文化会館（アミューズメント佐渡）","conductor":"","program":["エルガー：愛の挨拶ほか"],"ticket_url":"https://www.njp.or.jp/concerts/260913"},{"orchestra":"読売日本交響楽団","date":"2026-09-13","time":"14:00","venue":"横浜みなとみらいホール","conductor":"ユライ・ヴァルチュハ","program":["シベリウス：ヴァイオリン協奏曲 ニ短調 作品47","ショスタコーヴィチ：交響曲第10番 ホ短調 作品93"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/152-2.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-13","time":"13:00","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"読売日本交響楽団","date":"2026-09-15","time":"19:00","venue":"サントリーホール","conductor":"ユライ・ヴァルチュハ","program":["シベリウス：ヴァイオリン協奏曲 ニ短調 作品47","ショスタコーヴィチ：交響曲第10番 ホ短調 作品93"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/695.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-15","time":"19:00","venue":"横浜みなとみらいホール 小ホール","conductor":"","program":["シューベルト：弦楽三重奏曲第1番 変ロ長調 D471 （扇谷・安達・門脇）","モーツァルト：ディヴェルティメント K.137 メンデルスゾーン（杉本哲也編曲）：「歌の翼に」","メンデルスゾーン：弦楽八重奏曲 変ホ長調 op.20 【第2部】トークイベント"],"ticket_url":"https://japanphil.or.jp/concert/20260915/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-16","time":"14:00","venue":"サントリーホール 大ホール","conductor":"渡邊一正","program":["シューベルト：交響曲第7番 ロ短調 D.759「未完成」","ベートーヴェン：交響曲第5番 ハ短調 op.67「運命」 ドヴォルジャーク：交響曲第9番 ホ短調 op.95「新世界より"],"ticket_url":"https://www.njp.or.jp/concerts/260916"},{"orchestra":"NHK交響楽団","date":"2026-09-17","time":"19:00","venue":"サントリーホール","conductor":"ファビオ・ルイージ","program":["ウェーバー／歌劇「オベロン」序曲","ブラームス／ヴァイオリン協奏曲 ニ長調 作品77","シューマン／交響曲 第4番 ニ短調 作品120（改訂版）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609B.html?pdate=20260917"},{"orchestra":"NHK交響楽団","date":"2026-09-18","time":"19:00","venue":"サントリーホール","conductor":"ファビオ・ルイージ","program":["ウェーバー／歌劇「オベロン」序曲","ブラームス／ヴァイオリン協奏曲 ニ長調 作品77","シューマン／交響曲 第4番 ニ短調 作品120（改訂版）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609B.html?pdate=20260918"},{"orchestra":"東京交響楽団","date":"2026-09-19","time":"18:00","venue":"サントリーホール","conductor":"ロレンツォ・ヴィオッティ","program":["《東京交響楽団創立80周年記念》 シュミット：オラトリオ「７つの封印の書」"],"ticket_url":"https://tokyosymphony.jp/concert/57541/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-19","time":"15:00","venue":"すみだトリフォニーホール 大ホール","conductor":"","program":["バッハ：2つのヴァイオリンのための協奏曲 ニ短調 BWV1043 マックス・リヒター：リコンポーズド・バイ・マックス・リ","ヴィヴァルディ「四季」 サラサーテ：ツィゴイネルワイゼン"],"ticket_url":"https://www.njp.or.jp/concerts/260919"},{"orchestra":"読売日本交響楽団","date":"2026-09-19","time":"14:00","venue":"東京芸術劇場","conductor":"ユライ・ヴァルチュハ","program":["グラズノフ：演奏会用ワルツ第１番 ニ長調 作品47","チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ラフマニノフ：交響的舞曲 作品45"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/290.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-19","time":"15:00","venue":"横浜みなとみらいホール","conductor":"オッコ・カム","program":["ラフマニノフ：ピアノ協奏曲第2番 ハ短調 op.18","ストラヴィンスキー：バレエ音楽《春の祭典》"],"ticket_url":"https://japanphil.or.jp/concert/20260919/"},{"orchestra":"NHK交響楽団","date":"2026-09-20","time":"15:00","venue":"あしかがフラワーパークプラザ（足利市民プラザ）・文化ホール","conductor":"ファビオ・ルイージ","program":["ウェーバー／歌劇「オベロン」序曲","ブラームス／ヴァイオリン協奏曲 ニ長調 作品77","シューマン／交響曲 第4番 ニ短調 作品120（改訂版）"],"ticket_url":"https://www.nhkso.or.jp/concert/20260920.html?pdate=20260920"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-09-20","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"三ツ橋敬子","program":["レスピーギ／交響詩『ローマの祭』","レスピーギ／交響詩『ローマの噴水』","レスピーギ／交響詩『ローマの松』"],"ticket_url":"https://www.tpo.or.jp/concert/20260920-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-09-20","time":"14:00","venue":"東京芸術劇場","conductor":"ユライ・ヴァルチュハ","program":["グラズノフ：演奏会用ワルツ第１番 ニ長調 作品47","チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ラフマニノフ：交響的舞曲 作品45"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/290-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-20","time":"15:00","venue":"杉並公会堂","conductor":"オッコ・カム","program":["ラフマニノフ：ピアノ協奏曲第2番 ハ短調 op.18","ストラヴィンスキー：バレエ音楽《春の祭典》"],"ticket_url":"https://japanphil.or.jp/concert/20260920/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-20","time":"14:00","venue":"すみだトリフォニーホール 大ホール","conductor":"渡邊 一正","program":["すぎやまこういち／交響組曲「ドラゴンクエストⅪ」過ぎ去りし時を求めて"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=737&"},{"orchestra":"東京交響楽団","date":"2026-09-21","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ロレンツォ・ヴィオッティ","program":["シュミット：オラトリオ「7つの封印の書」"],"ticket_url":"https://tokyosymphony.jp/concert/60855/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-21","time":"16:00","venue":"東京オペラシティ コンサートホール","conductor":"大友直人","program":["ヴェルディ「レクイエム」 指揮 大友直人","ヴェルディ：レクイエム"],"ticket_url":"https://www.tokyo-academy.com"},{"orchestra":"東京交響楽団","date":"2026-09-23","time":"14:00","venue":"府中の森芸術劇場どりーむホール","conductor":"大友直人","program":["ラフマニノフ：ピアノ協奏曲 第2番 ハ短調 作品18","ブラームス：交響曲 第4番 ホ短調 作品98"],"ticket_url":"https://tokyosymphony.jp/concert/60217/"},{"orchestra":"読売日本交響楽団","date":"2026-09-23","time":"17:00","venue":"長野県伊那文化会館 大ホール","conductor":"横山奏","program":["ロッシーニ：歌劇「ウィリアム・テル」序曲","メンデルスゾーン：ヴァイオリン協奏曲 ホ短調 作品64","チャイコフスキー：交響曲第5番 ホ短調 作品64"],"ticket_url":"https://yomikyo.or.jp/concert/2026/05/post-706.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-23","time":"14:00","venue":"調布市グリーンホール 大ホール","conductor":"渡邊 一正","program":["すぎやまこういち／交響組曲「ドラゴンクエストⅠ」交響組曲「ドラゴンクエストⅡ」悪霊の神々"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=738&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-25","time":"19:00","venue":"すみだトリフォニーホール 大ホール","conductor":"藤岡 幸夫","program":["マーラー：交響曲第1番 ニ長調「巨人」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=750&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-09-26","time":"15:00","venue":"文京シビックホール 大ホール","conductor":"川瀬賢太郎","program":["モーツァルト／ピアノ協奏曲第9番* ブルッフ／ヴァイオリン協奏曲第1番**","ドヴォルザーク／交響曲第8番"],"ticket_url":"https://www.b-academy.jp/access/"},{"orchestra":"東京交響楽団","date":"2026-09-26","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ユベール・スダーン","program":["メンデルスゾーン：序曲「フィンガルの洞窟」op.26","ショパン：ピアノ協奏曲 第2番 ヘ短調 op.21","メンデルスゾーン：交響曲 第4番 イ長調 op.90「イタリア」"],"ticket_url":"https://tokyosymphony.jp/concert/57655/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-26","time":"14:00","venue":"ソニックシティ","conductor":"小林研一郎","program":["ベルリオーズ：幻想交響曲 op.14"],"ticket_url":"https://japanphil.or.jp/concert/20260926/"},{"orchestra":"東京交響楽団","date":"2026-09-27","time":"17:00","venue":"りゅーとぴあ 新潟市民芸術文化会館 コンサートホール","conductor":"ユベール・スダーン","program":["メンデルスゾーン：序曲「フィンガルの洞窟」op.26","ショパン：ピアノ協奏曲 第2番 ヘ短調 op.21","メンデルスゾーン：交響曲 第4番 イ長調 op.90「イタリア」"],"ticket_url":"https://tokyosymphony.jp/concert/57793/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-27","time":"14:00","venue":"サントリーホール","conductor":"小林研一郎","program":["ベルリオーズ：幻想交響曲 op.14"],"ticket_url":"https://japanphil.or.jp/concert/20260927/"},{"orchestra":"読売日本交響楽団","date":"2026-09-30","time":"19:00","venue":"フェスティバルホール（大阪）","conductor":"ローター・ツァグロゼク","program":["R.シュトラウス：ヴァイオリン協奏曲 二短調 作品8","ブルックナー：交響曲第4番 変ホ長調 「ロマンティック」WAB104（1888年稿／コーストヴェット校訂版）"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/45-4.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-02","time":"","venue":"新国立劇場オペラパレス","conductor":"アレッサンドロ・ボナート","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"読売日本交響楽団","date":"2026-10-02","time":"19:00","venue":"サントリーホール","conductor":"ローター・ツァグロゼク","program":["R.シュトラウス：ヴァイオリン協奏曲 二短調 作品8","ブルックナー：交響曲第4番 変ホ長調 「ロマンティック」 WAB104（1888年稿／コーストヴェット校訂版）"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/662-1.php"},{"orchestra":"東京交響楽団","date":"2026-10-03","time":"14:00","venue":"東京オペラシティコンサートホール","conductor":"広上淳一","program":["ベルリオーズ：歌劇「ベアトリスとベネディクト」から序曲","ショパン：ピアノ協奏曲 第1番 ホ短調 op.11 ムソルグスキー（ラヴェル編）：組曲「展覧会の絵」"],"ticket_url":"https://tokyosymphony.jp/concert/57615/"},{"orchestra":"東京都交響楽団","date":"2026-10-03","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"ジョナサン・ノット","program":["メンデルスゾーン：序曲《フィンガルの洞窟》op.26 ブルッフ：スコットランド幻想曲 op.46*","ストラヴィンスキー：葬送の歌 op.5","スクリャービン：法悦の詩（交響曲第4番）op.54"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4091"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-04","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"角田鋼亮","program":["ワーグナー／歌劇『タンホイザー』序曲 ※10月5日（月）平日の午後のコンサートと同演目です"],"ticket_url":"https://www.tpo.or.jp/concert/20261004-01.php"},{"orchestra":"東京交響楽団","date":"2026-10-04","time":"15:30","venue":"Bunkamura オーチャードホール","conductor":"大井駿","program":[],"ticket_url":"https://tokyosymphony.jp/concert/61585/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-04","time":"14:00","venue":"アミューズメント佐渡","conductor":"齋藤友香理独奏","program":["グリーグ：組曲「ホルベアの時代より」～プレリュード","モーツァルト：ヴァイオリン協奏曲第3番 ト長調 K216（","バルトーク：ルーマニア民俗舞曲","バッハ：G線上のアリア","エルガー：愛の挨拶","チャイコフスキー：弦楽セレナーデ～第2楽章（ワルツ）","ベートーヴェン：交響曲第5番「運命」～第1楽章"],"ticket_url":"https://japanphil.or.jp/concert/20261004/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-05","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"角田鋼亮","program":["ワーグナー／歌劇『タンホイザー』序曲 ※10月4日（日）休日の午後のコンサートと同演目です"],"ticket_url":"https://www.tpo.or.jp/concert/20261005-01.php"},{"orchestra":"東京都交響楽団","date":"2026-10-09","time":"19:00","venue":"サントリーホール","conductor":"ジョナサン・ノット","program":["ベートーヴェン：ピアノ協奏曲第4番 ト長調 op.58","ブルックナー：交響曲第6番 イ長調 WAB106（ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4092"},{"orchestra":"読売日本交響楽団","date":"2026-10-09","time":"18:30","venue":"枚方市総合文化芸術センター 関西医大 大ホール","conductor":"小林研一郎","program":["ショパン：ピアノ協奏曲第1番 ホ短調 作品11","ドヴォルザーク：交響曲第9番 ホ短調 作品95 「新世界から」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/06/post-710.php"},{"orchestra":"東京交響楽団","date":"2026-10-10","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ロレンツォ・ヴィオッティ","program":["ショスタコーヴィチ：交響曲 第10番 ホ短調 op.93 ※途中休憩なし"],"ticket_url":"https://tokyosymphony.jp/concert/57658/"},{"orchestra":"東京都交響楽団","date":"2026-10-10","time":"14:00","venue":"すみだトリフォニーホール","conductor":"ジョナサン・ノット","program":["ベートーヴェン：ピアノ協奏曲第4番 ト長調 op.58","ブルックナー：交響曲第6番 イ長調 WAB106（ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4093"},{"orchestra":"読売日本交響楽団","date":"2026-10-10","time":"17:30","venue":"愛媛県県民文化会館 メインホール","conductor":"小林研一郎","program":["ショパン：ピアノ協奏曲第1番 ホ短調 作品11","ドヴォルザーク：交響曲第9番 ホ短調 作品95 「新世界から」","【発売日】4月21日(火) 10時","【お申込み・お問い合わせ】","愛媛県県民文化会館 089-927-4777（平日9時－17時／発売初日は10時から販売）"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/-presents-2026.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-10-10","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"高関 健","program":["武満徹：夢の時","プロコフィエフ：ピアノ協奏曲第2番 ト短調 作品16 ムソルグスキー(ラヴェル編)：組曲「展覧会の絵」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=743&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-11","time":"14:00","venue":"長岡市立劇場 大ホール","conductor":"広上淳一","program":["ラヴェル／組曲『マ・メール・ロワ』","ラヴェル／ピアノ協奏曲*","ラヴェル／『ダニフスとクロエ』第1組曲、第2組曲"],"ticket_url":"https://www.tpo.or.jp/concert/20261011-01.php"},{"orchestra":"東京交響楽団","date":"2026-10-11","time":"14:00","venue":"サントリーホール","conductor":"ロレンツォ・ヴィオッティ","program":["ショスタコーヴィチ：交響曲 第10番 ホ短調 op.93 ※途中休憩なし"],"ticket_url":"https://tokyosymphony.jp/concert/57556/"},{"orchestra":"読売日本交響楽団","date":"2026-10-11","time":"18:30","venue":"三友サルビアホール 大ホール","conductor":"小林研一郎","program":["ショパン：ピアノ協奏曲第1番 ホ短調 作品11","ドヴォルザーク：交響曲第9番 ホ短調 作品95 「新世界から」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/06/post-711.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-11","time":"14:00","venue":"渡辺翁記念会館","conductor":"山下一史","program":["ブラームス：ヴァイオリン協奏曲 ニ長調 op.77","ブラームス：交響曲第1番 ハ短調 op.68"],"ticket_url":"https://japanphil.or.jp/concert/20261011/"},{"orchestra":"東京交響楽団","date":"2026-10-12","time":"14:00","venue":"よこすか芸術劇場","conductor":"ロレンツォ・ヴィオッティ","program":["ショスタコーヴィチ：交響曲 第10番 ホ短調 op.93 ※途中休憩なし"],"ticket_url":"https://tokyosymphony.jp/concert/60892/"},{"orchestra":"東京都交響楽団","date":"2026-10-12","time":"14:00","venue":"タクトホームこもれびGRAFAREホール（保谷こもれびホール）メインホール","conductor":"和田一樹","program":["すぎやまこういち：交響組曲『ドラゴンクエストⅤ』天空の花嫁 より「序曲のマーチ」","ビゼー：歌劇『カルメン』前奏曲 J.シュトラウス1世：ラデツキー行進曲 op.228 ♪指揮体験コーナー","ブラームス：ハンガリー舞曲第5番 ト短調 J.シュトラウス2世：ポルカ・シュネル《観光列車》 op.281♪みんなで一緒","ヴェルディ：歌劇『アイーダ』より「凱旋行進曲」"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202610"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-15","time":"19:00","venue":"サントリーホール 大ホール","conductor":"チョン・ミョンフン","program":["シベリウス／ヴァイオリン協奏曲*","ベートーヴェン／交響曲第7番"],"ticket_url":"https://www.tpo.or.jp/concert/20261015-01.php"},{"orchestra":"東京都交響楽団","date":"2026-10-15","time":"14:00","venue":"東大和市民会館ハミングホール","conductor":"山下一史","program":["ベートーヴェン：交響曲第5番 ハ短調 op.67《運命》"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202610"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-16","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"チョン・ミョンフン","program":["シベリウス／ヴァイオリン協奏曲*","ベートーヴェン／交響曲第7番"],"ticket_url":"https://www.tpo.or.jp/concert/20261016-01.php"},{"orchestra":"東京都交響楽団","date":"2026-10-16","time":"14:00","venue":"狛江エコルマホール","conductor":"山下一史","program":["ベートーヴェン：交響曲第5番 ハ短調 op.67《運命》"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202610"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-16","time":"19:00","venue":"サントリーホール","conductor":"山田和樹","program":["バルトーク：ヴァイオリン協奏曲第2番 BB117","チャイコフスキー：交響曲第6番《悲愴》 ロ短調 op.74"],"ticket_url":"https://japanphil.or.jp/concert/20261016/"},{"orchestra":"東京交響楽団","date":"2026-10-17","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"出口大地","program":["チャイコフスキー：ピアノ協奏曲 第1番 変ロ短調 op.23","チャイコフスキー：交響曲 第6番 ロ短調 op.74「悲愴」"],"ticket_url":"https://tokyosymphony.jp/concert/57593/"},{"orchestra":"読売日本交響楽団","date":"2026-10-17","time":"14:00","venue":"東京芸術劇場","conductor":"レスリー・スガナンダラージャ","program":["ドヴォルザーク：歌劇「ルサルカ」から“ポロネーズ”","ショパン：ピアノ協奏曲第1番 ホ短調 作品11","シューマン：交響曲第3番 変ホ長調 作品97「ライン」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/291.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-17","time":"14:00","venue":"サントリーホール","conductor":"山田和樹","program":["バルトーク：ヴァイオリン協奏曲第2番 BB117","チャイコフスキー：交響曲第6番《悲愴》 ロ短調 op.74"],"ticket_url":"https://japanphil.or.jp/concert/20261017/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-10-17","time":"14:00","venue":"文京シビックホール 大ホール","conductor":"松村 優吾","program":["フォーレ：レクイエム","プッチーニ：ミサ曲"],"ticket_url":"https://www.kujira.org/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-18","time":"15:00","venue":"Bunkamura オーチャードホール","conductor":"チョン・ミョンフン","program":["シベリウス／ヴァイオリン協奏曲*","ベートーヴェン／交響曲第7番"],"ticket_url":"https://www.tpo.or.jp/concert/20261018-01.php"},{"orchestra":"東京交響楽団","date":"2026-10-18","time":"17:00","venue":"りゅーとぴあ 新潟市民芸術文化会館 コンサートホール","conductor":"出口大地","program":["チャイコフスキー：ピアノ協奏曲 第1番 変ロ短調 op.23","チャイコフスキー：交響曲 第6番 ロ短調 op.74「悲愴」"],"ticket_url":"https://tokyosymphony.jp/concert/57802/"},{"orchestra":"読売日本交響楽団","date":"2026-10-18","time":"14:00","venue":"東京芸術劇場","conductor":"レスリー・スガナンダラージャ","program":["ドヴォルザーク：歌劇「ルサルカ」から“ポロネーズ”","ショパン：ピアノ協奏曲第1番 ホ短調 作品11","シューマン：交響曲第3番 変ホ長調 作品97「ライン」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/291-1.php"},{"orchestra":"東京交響楽団","date":"2026-10-20","time":"19:00","venue":"サントリーホール","conductor":"大友直人","program":["ベートーヴェン：ピアノ協奏曲3番 ハ短調 Op.37 ヴォーン・ウィリアムズ：ドナ・ノビス・パーチェム"],"ticket_url":"https://tokyosymphony.jp/concert/61591/"},{"orchestra":"東京都交響楽団","date":"2026-10-21","time":"19:00","venue":"サントリーホール","conductor":"マルク・ミンコフスキ","program":["ブルックナー：交響曲第8番 ハ短調WAB108（1887年第1稿・ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4094"},{"orchestra":"東京都交響楽団","date":"2026-10-22","time":"19:00","venue":"サントリーホール","conductor":"マルク・ミンコフスキ","program":["ブルックナー：交響曲第8番 ハ短調WAB108（1887年第1稿・ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4095"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-23","time":"","venue":"新国立劇場オペラパレス","conductor":"ティモシー・ブロック","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"読売日本交響楽団","date":"2026-10-23","time":"19:00","venue":"サントリーホール","conductor":"ジョヴァンニ・アントニーニ","program":["モーツァルト：交響曲第25番 ト短調 K. 183","シューマン：チェロ協奏曲 イ短調 作品129","モーツァルト：交響曲第40番 ト短調 K. 550"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/696.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-24","time":"14:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["チャイコフスキー：ピアノ協奏曲第1番 変ロ短調 op.23 ムソルグスキー（カーチュン・ウォン編曲）：組曲《展覧会の絵》"],"ticket_url":"https://japanphil.or.jp/concert/20261024/"},{"orchestra":"読売日本交響楽団","date":"2026-10-25","time":"14:00","venue":"横浜みなとみらいホール","conductor":"ジョヴァンニ・アントニーニ","program":["モーツァルト：交響曲第25番 ト短調 K. 183","シューマン：チェロ協奏曲 イ短調 作品129","モーツァルト：交響曲第40番 ト短調 K. 550"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/153-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-26","time":"19:00","venue":"サントリーホール","conductor":"小林研一郎","program":["チャイコフスキー：ロココ風の主題による変奏曲 イ長調 op.33 *","ラヴェル：《ボレロ》"],"ticket_url":"https://japanphil.or.jp/concert/20261026/"},{"orchestra":"東京都交響楽団","date":"2026-10-28","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"マルク・ミンコフスキ","program":["ラヴェル：ボレロ"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4096"},{"orchestra":"東京都交響楽団","date":"2026-10-29","time":"19:00","venue":"東京芸術劇場コンサートホール","conductor":"マルク・ミンコフスキ","program":["ラヴェル：ボレロ"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4097"},{"orchestra":"読売日本交響楽団","date":"2026-10-29","time":"19:30","venue":"TOPPANホール","conductor":"","program":["ヴィヴァルディ：弦楽のための協奏曲 ホ短調 RV134","テレマン：リコーダー協奏曲 ハ長調 TWV51:C1","タルティーニ：ヴァイオリン協奏曲 ホ短調 D.55","J.M. クラウス：劇音楽「オリンピー」序曲","ハイドン：交響曲第104番 二長調「ロンドン」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/52.php"},{"orchestra":"東京交響楽団","date":"2026-10-31","time":"11:00","venue":"ミューザ川崎シンフォニーホール","conductor":"太田 弦","program":["＜オール・モーツァルト・プログラム＞ 交響曲 第23番 ニ長調 K. 181(162b) ピアノ協奏曲 第20番 ニ短調 K. 466 交響曲 第35番 ニ長調 K. 385「ハフナー」"],"ticket_url":"https://tokyosymphony.jp/concert/59657/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-31","time":"15:00","venue":"横浜みなとみらいホール","conductor":"小林研一郎","program":["モーツァルト：ディヴェルティメント ニ長調 K.136","モーツァルト：協奏交響曲 変ホ長調（オーボエ、クラリネット、ホルン、ファゴットのための）K.297b","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://japanphil.or.jp/concert/20261031/"},{"orchestra":"東京交響楽団","date":"2026-11-01","time":"14:00","venue":"東京オペラシティコンサートホール","conductor":"大井剛史","program":["ドヴォルザーク：序曲「我が家」op.62 スメタナ：連作交響詩「我が祖国」"],"ticket_url":"https://tokyosymphony.jp/concert/57619/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-01","time":"14:00","venue":"東京芸術劇場","conductor":"小林研一郎","program":["モーツァルト：ディヴェルティメント ニ長調 K.136","モーツァルト：協奏交響曲 変ホ長調 （オーボエ、クラリネット、ホルン、ファゴットのための）K.297b","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://japanphil.or.jp/concert/20261101/"},{"orchestra":"東京都交響楽団","date":"2026-11-02","time":"19:00","venue":"ルーテル市ヶ谷ホール","conductor":"","program":["モーツァルト：弦楽四重奏曲 第10番 ハ長調 KV170","バルトーク：弦楽四重奏曲 第3番 Sz.85","ブラームス：弦楽四重奏曲 第1番 ハ短調 Op.51-1"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4187"},{"orchestra":"東京都交響楽団","date":"2026-11-03","time":"14:00","venue":"東京芸術劇場 コンサートホール","conductor":"梅田俊明","program":["モーツァルト：セレナード第13番 ト長調 Ｋ.525 《アイネ・クライネ・ナハトムジーク》","モーツァルト：交響曲第25番 ト短調 Ｋ.183（173dB）","モーツァルト：交響曲第41番 ハ長調 Ｋ.551 《ジュピター》"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"読売日本交響楽団","date":"2026-11-03","time":"15:00","venue":"めぐろパーシモンホール","conductor":"岡本陸","program":["ラフマニノフ：ピアノ協奏曲第2番 ハ短調 作品18","チャイコフスキー：交響曲第1番 ト短調 作品13「冬の日の幻想」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/03/post-698.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-05","time":"14:00","venue":"サントリーホール","conductor":"広上淳一","program":["モーツァルト:ヴァイオリンとヴィオラのための協奏交響曲 変ホ長調 K.364より 第3楽章 ロッシーニ:歌劇《ウィリアム","グリーグ：組曲《ホルベアの時代より》op.40 より 第1曲「前奏曲」、第4曲「アリア」、第5曲「リゴードン」","ラヴェル：ボレロ"],"ticket_url":"https://japanphil.or.jp/concert/20261105/"},{"orchestra":"東京都交響楽団","date":"2026-11-07","time":"14:00","venue":"どりーむホール","conductor":"小泉和裕","program":[],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"読売日本交響楽団","date":"2026-11-07","time":"16:00","venue":"盛岡市民文化ホール 大ホール","conductor":"海老原光","program":["チャイコフスキー：ピアノ協奏曲第1番 変ロ短調 作品23","チャイコフスキー：交響曲第5番 ホ短調 作品64"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-702.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-07","time":"14:00","venue":"ソニックシティ","conductor":"広上淳一","program":["チャイコフスキー：交響曲第5番 ホ短調 op.64"],"ticket_url":"https://japanphil.or.jp/concert/20261107/"},{"orchestra":"読売日本交響楽団","date":"2026-11-08","time":"16:00","venue":"タイハクホール名取(名取市文化会館) 大ホール","conductor":"海老原光","program":["チャイコフスキー：ピアノ協奏曲第1番 変ロ短調 作品23","チャイコフスキー：交響曲第5番 ホ短調 作品64"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-703.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-08","time":"14:00","venue":"大田区民ホール・アプリコ 大ホール","conductor":"藤岡幸夫","program":["ベートーヴェン：エグモント序曲 op.84 ヴァンハル：コントラバス協奏曲 二長調","モーツァルト：交響曲第41番 《ジュピター》ハ長調 K.551"],"ticket_url":"https://japanphil.or.jp/concert/20261108/"},{"orchestra":"東京都交響楽団","date":"2026-11-09","time":"19:00","venue":"ルーテル市ヶ谷ホール","conductor":"","program":["ドヴォルザーク：テルツェット ハ長調 Op.74 B.148* コダーイ：セレナーデ ヘ長調 Op.12*"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4203"},{"orchestra":"東京都交響楽団","date":"2026-11-09","time":"19:00","venue":"ヤマハホール","conductor":"","program":["バッハ：シャコンヌ","ドビュッシー：月の光 クレンゲル：2つの小品","バルトーク：ルーマニア民謡舞曲 ロジャーヌ：サウンドオブミュージックより ほか"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4205"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-11-12","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"原田 慶太楼","program":[],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=744&"},{"orchestra":"東京都交響楽団","date":"2026-11-13","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"準・メルクル","program":["ベートーヴェン：ピアノ協奏曲第5番 変ホ長調 op.73《皇帝》","ベートーヴェン：交響曲第3番 変ホ長調 op.55《英雄》"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4098"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-13","time":"19:00","venue":"サントリーホール","conductor":"小林研一郎","program":["スメタナ：連作交響詩《我が祖国》 ※第3曲と第4曲の間に20分の休憩が入ります"],"ticket_url":"https://japanphil.or.jp/concert/20261113/"},{"orchestra":"東京都交響楽団","date":"2026-11-14","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"準・メルクル","program":["ベートーヴェン：ピアノ協奏曲第5番 変ホ長調 op.73《皇帝》","ベートーヴェン：交響曲第3番 変ホ長調 op.55《英雄》"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4099"},{"orchestra":"読売日本交響楽団","date":"2026-11-14","time":"14:30","venue":"取手市民会館","conductor":"藤岡幸夫","program":["チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ブラームス：交響曲第1番 ハ短調 作品68"],"ticket_url":"https://yomikyo.or.jp/concert/2026/07/-2026.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-14","time":"14:00","venue":"サントリーホール","conductor":"小林研一郎","program":["スメタナ：連作交響詩《我が祖国》 ※第3曲と第4曲の間に20分の休憩が入ります"],"ticket_url":"https://japanphil.or.jp/concert/20261114/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-15","time":"15:00","venue":"Bunkamura オーチャードホール","conductor":"ミハイル・プレトニョフ","program":["チャイコフスキー／交響曲第4番"],"ticket_url":"https://www.tpo.or.jp/concert/20261115-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-11-15","time":"16:00","venue":"りゅーとぴあ 新潟市民芸術文化会館 コンサートホール","conductor":"藤岡幸夫","program":["チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ブラームス：交響曲第1番 ハ短調 作品68"],"ticket_url":"https://yomikyo.or.jp/concert/2026/07/-2026-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-11-15","time":"14:00","venue":"サンシティホール 大ホール（越谷）","conductor":"渡邊 一正","program":["すぎやまこういち／交響組曲「ドラゴンクエストⅢ」そして伝説へ…"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=739&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-16","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"ミハイル・プレトニョフ","program":["チャイコフスキー／交響曲第4番"],"ticket_url":"https://www.tpo.or.jp/concert/20261116-01.php"},{"orchestra":"東京都交響楽団","date":"2026-11-16","time":"19:00","venue":"ムジカーザ","conductor":"","program":["ハイドン：弦楽四重奏曲 第77番 ハ長調 op.76-3《皇帝》","ショスタコーヴィチ：弦楽四重奏曲 第1番 ハ長調 op.49","シューベルト：弦楽四重奏曲 第13番 イ短調 D804《ロザムンデ》"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4200"},{"orchestra":"東京都交響楽団","date":"2026-11-17","time":"14:00","venue":"町田市民ホール","conductor":"横山 奏","program":["ベートーヴェン：序曲《コリオラン》 op.62","シューベルト：劇付随音楽《ロザムンデ》 D797 より 間奏曲第3番","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"読売日本交響楽団","date":"2026-11-17","time":"13:30","venue":"横浜みなとみらいホール","conductor":"藤岡幸夫","program":["チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ブラームス：交響曲第1番 ハ短調 作品68"],"ticket_url":"https://yomikyo.or.jp/concert/2026/08/post-713.php"},{"orchestra":"東京都交響楽団","date":"2026-11-18","time":"14:00","venue":"プリモホールゆとろぎ（羽村市生涯学習センター）","conductor":"横山 奏","program":["ベートーヴェン：序曲《コリオラン》 op.62","シューベルト：劇付随音楽《ロザムンデ》 D797 より 間奏曲第3番","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-21","time":"14:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","サン＝サーンス：交響曲第3番《オルガン付き》 ハ短調 op.78"],"ticket_url":"https://japanphil.or.jp/concert/20261121/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-22","time":"15:00","venue":"横浜みなとみらいホール","conductor":"カーチュン・ウォン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","サン＝サーンス：交響曲第3番《オルガン付き》 ハ短調 op.78"],"ticket_url":"https://japanphil.or.jp/concert/20261122/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-23","time":"","venue":"新国立劇場オペラパレス","conductor":"大野和士","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-23","time":"14:00","venue":"横浜能楽堂","conductor":"","program":["バッハ：無伴奏ヴァイオリンソナタ第2番《グラーヴェ》 ドホナーニ：弦楽三重奏のためのセレナードより第3楽章 能楽「嵐山」","武満徹：エア 能楽「山姥」より ペルト：スンマ（弦楽四重奏＋舞）","ラヴェル：弦楽四重奏曲より 他"],"ticket_url":"https://japanphil.or.jp/concert/20261123-14/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-23","time":"17:00","venue":"横浜能楽堂","conductor":"","program":["バッハ：無伴奏ヴァイオリンソナタ第2番《グラーヴェ》 ドホナーニ：弦楽三重奏のためのセレナードより第3楽章 能楽「嵐山」","武満徹：エア 能楽「山姥」より ペルト：スンマ（弦楽四重奏＋舞）","ラヴェル：弦楽四重奏曲より 他"],"ticket_url":"https://japanphil.or.jp/concert/20261123-17/"},{"orchestra":"読売日本交響楽団","date":"2026-11-24","time":"19:00","venue":"サントリーホール","conductor":"フランソワ＝グザヴィエ・ロト","program":["ヤナーチェク：狂詩曲「タラス・ブーリバ」","モーツァルト：交響曲第34番 ハ長調 K. 338","ヤナーチェク：シンフォニエッタ"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/697.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-11-25","time":"19:00","venue":"浜離宮朝日ホール","conductor":"ミシェル・ダルベルト","program":["モーツァルト：フィガロの結婚 K492より序曲","モーツァルト：ピアノ協奏曲第23番 イ長調 K488","モーツァルト：ピアノ協奏曲第24番 ハ短調 K491"],"ticket_url":"https://www.mozart.or.jp/concert/2710/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-26","time":"15:00","venue":"杉並公会堂","conductor":"松本宗利音","program":["メンデルスゾーン：ヴァイオリン協奏曲 ホ短調 op.64","ブラームス：交響曲第1番 ハ短調 op.68"],"ticket_url":"https://japanphil.or.jp/concert/20261126/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-29","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"円光寺雅彦","program":["ベートーヴェン／ピアノ協奏曲第3番* ポンキエッリ／歌劇『ラ・ジョコンダ』より「時の踊り」","チャイコフスキー／イタリア奇想曲"],"ticket_url":"https://www.tpo.or.jp/concert/20261129-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-11-29","time":"14:00","venue":"横浜みなとみらいホール","conductor":"フランソワ＝グザヴィエ・ロト","program":["マヌリ：サッカード 〜フルートとオーケストラのための","マーラー：交響曲第4番 ト長調「大いなる喜びへの賛歌」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/154-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-29","time":"14:00","venue":"ヤマハホール","conductor":"","program":["エルガー：弦楽セレナード ホ短調 Op.20 扇谷泰朋、田村昭博、太田麻衣、大貫聖子［Violin］ 江藤史織、中川裕美"],"ticket_url":"https://japanphil.or.jp/concert/20261129/"},{"orchestra":"読売日本交響楽団","date":"2026-11-30","time":"19:00","venue":"サントリーホール","conductor":"フランソワ＝グザヴィエ・ロト","program":["マヌリ：サッカード〜フルートとオーケストラのための","マーラー：交響曲第4番 ト長調「大いなる喜びへの賛歌」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/663-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-12-03","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"藤岡 幸夫","program":[],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=745&"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-04","time":"19:00","venue":"サントリーホール","conductor":"沖澤のどか","program":["ブラームス：交響曲第2番 ニ長調 op.73"],"ticket_url":"https://japanphil.or.jp/concert/20261204/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-05","time":"14:00","venue":"サントリーホール","conductor":"沖澤のどか","program":["ブラームス：交響曲第2番 ニ長調 op.73"],"ticket_url":"https://japanphil.or.jp/concert/20261205/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-06","time":"14:00","venue":"Bunkamura オーチャードホール","conductor":"挾間美帆","program":["マイルス・デイヴィス（ギル・エヴァンス編）／『スケッチ・オブ・スペイン』より、『ポーギーとベス』より チャイコフスキー（エリントン編）／バレエ組曲『くるみ割り人形』より ほか （オーケストレーション：挾間美帆） ※12月7日（月）平日の午後のコンサートと同演目です。"],"ticket_url":"https://www.tpo.or.jp/concert/20261206-01.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-06","time":"","venue":"新国立劇場オペラパレス","conductor":"阪 哲朗","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-07","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"挾間美帆","program":["マイルス・デイヴィス（ギル・エヴァンス編）／『スケッチ・オブ・スペイン』より、『ポーギーとベス』より チャイコフスキー（エリントン編）／バレエ組曲『くるみ割り人形』より ほか （オーケストレーション：挾間美帆） ※12月6日（日）渋谷の午後のコンサートと同演目です。"],"ticket_url":"https://www.tpo.or.jp/concert/20261207-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-12","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["《ゲーテの「ファウスト」の情景》","日本語字幕付原語［ドイツ語］上演","作曲：ロベルト・シューマン"],"ticket_url":"https://yomikyo.or.jp/concert/2026/05/post-707.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-13","time":"15:00","venue":"Bunkamura オーチャードホール","conductor":"尾高忠明","program":["ソプラノ：今井実希 アルト：中島郁子 テノール：伊藤達人 バリトン：上江隼人 合唱： 新国立劇場合唱団"],"ticket_url":"https://www.tpo.or.jp/concert/20261213-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-13","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["《ゲーテの「ファウスト」の情景》","日本語字幕付原語［ドイツ語］上演","作曲：ロベルト・シューマン"],"ticket_url":"https://yomikyo.or.jp/concert/2026/05/post-708.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-17","time":"19:00","venue":"フェスティバルホール（大阪）","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125 「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/46-2.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-18","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"尾高忠明","program":["ソプラノ：今井実希 アルト：中島郁子 テノール：伊藤達人 バリトン：上江隼人 合唱： 新国立劇場合唱団"],"ticket_url":"https://www.tpo.or.jp/concert/20261218-01.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-18","time":"","venue":"新国立劇場オペラパレス","conductor":"冨田実里ほか","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-18","time":"19:00","venue":"ソニックシティ","conductor":"阪哲朗","program":["ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261218/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-19","time":"19:00","venue":"サントリーホール 大ホール","conductor":"尾高忠明","program":["ソプラノ：今井実希 アルト：中島郁子 テノール：伊藤達人 バリトン：上江隼人 合唱： 新国立劇場合唱団"],"ticket_url":"https://www.tpo.or.jp/concert/20261219-01.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-19","time":"15:00","venue":"横浜みなとみらいホール","conductor":"阪哲朗","program":["バッハ：暁の星のいと美しきかな BWV739 羊は安らかに草を食み BWV208-9 トッカータとフーガ ニ短調 BWV","ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261219/"},{"orchestra":"読売日本交響楽団","date":"2026-12-20","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/292-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-20","time":"14:00","venue":"サントリーホール","conductor":"阪哲朗","program":["バッハ：暁の星のいと美しきかな BWV739 羊は安らかに草を食み BWV208-9 トッカータとフーガ ニ短調 BWV","ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261220/"},{"orchestra":"読売日本交響楽団","date":"2026-12-21","time":"19:00","venue":"サントリーホール","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-701.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-22","time":"19:00","venue":"サントリーホール","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/698.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-23","time":"19:00","venue":"東京芸術劇場","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261223/"},{"orchestra":"読売日本交響楽団","date":"2026-12-25","time":"19:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125 「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-700.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-26","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/292.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-26","time":"14:00","venue":"横浜みなとみらいホール","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261226/"},{"orchestra":"読売日本交響楽団","date":"2026-12-27","time":"14:00","venue":"横浜みなとみらいホール","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125 「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/155-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-27","time":"14:00","venue":"サントリーホール","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261227/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-28","time":"19:00","venue":"東京芸術劇場","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261228/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-12-28","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"藤岡 幸夫","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=755&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-12-31","time":"22:00","venue":"東京オペラシティ コンサートホール","conductor":"井田 勝大","program":["すぎやまこういち：交響組曲「ドラゴンクエストⅦ」エデンの戦士たち"],"ticket_url":"https://www.cityphil.jp/concert/"},{"orchestra":"読売日本交響楽団","date":"2027-01-08","time":"19:00","venue":"東京芸術劇場","conductor":"沼尻竜典","program":["ビゼー：カルメン第１組曲","ラヴェル ：ピアノ協奏曲 ト長調","ブラームス：交響曲第４番 ホ短調 作品98"],"ticket_url":"https://yomikyo.or.jp/concert/2026/08/2027-no58.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-09","time":"15:00","venue":"横浜みなとみらいホール","conductor":"カーチュン・ウォン","program":["ハチャトゥリアン：組曲《仮面舞踏会》","ハイドン：トランペット協奏曲 変ホ長調 Hob.VIIe:1 J.シュトラウスⅡ世：喜歌劇《こうもり》序曲 J.シュトラ","ラヴェル：《ダフニスとクロエ》第2組曲"],"ticket_url":"https://japanphil.or.jp/concert/20270109/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-10","time":"14:00","venue":"東京芸術劇場","conductor":"カーチュン・ウォン","program":["ハチャトゥリアン：組曲《仮面舞踏会》","ハイドン：トランペット協奏曲 変ホ長調 Hob.VIIe:1 J.シュトラウスⅡ世：喜歌劇《こうもり》序曲 J.シュトラ","ラヴェル：《ダフニスとクロエ》第2組曲"],"ticket_url":"https://japanphil.or.jp/concert/20270110/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-01-11","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"藤岡 幸夫","program":["モーツァルト：オペラ「魔笛」より夜の女王のアリア“復讐の炎は地獄のように我が心に燃え”","ビゼー：オペラ「カルメン」より闘牛士の歌“諸君らの乾杯を喜んで受けよう”(加耒)","エルガー：行進曲「威風堂々」第1番 ほか"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=800&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-01-15","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"高関 健","program":["バルトーク：ハンガリーの風景 Sz.97","バルトーク：ヴァイオリン協奏曲第2番 Sz.112","ストラヴィンスキー：バレエ音楽「火の鳥」（1910年原典版）"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=752&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-01-16","time":"15:00","venue":"文京シビックホール 大ホール","conductor":"小林研一郎","program":["チャイコフスキー／ヴァイオリン協奏曲*","ドヴォルザーク／交響曲第9番『新世界より』"],"ticket_url":"https://www.b-academy.jp/access/"},{"orchestra":"読売日本交響楽団","date":"2027-01-16","time":"14:00","venue":"東京芸術劇場","conductor":"原田慶太楼","program":["エルガー：チェロ協奏曲 ホ短調 作品85","ホルスト：組曲「惑星」 作品32"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/293.php"},{"orchestra":"読売日本交響楽団","date":"2027-01-17","time":"14:00","venue":"東京芸術劇場","conductor":"原田慶太楼","program":["エルガー：チェロ協奏曲 ホ短調 作品85","ホルスト：組曲「惑星」 作品32"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/293-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-17","time":"15:00","venue":"杉並公会堂","conductor":"広上淳一","program":["ドヴォルジャーク：チェロ協奏曲 ロ短調 op.104, B.191 大河ドラマ音楽特集"],"ticket_url":"https://japanphil.or.jp/concert/20270117/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-01-21","time":"19:00","venue":"サントリーホール 大ホール","conductor":"ソフィー・デルヴォー","program":["モーツァルト／歌劇『魔笛』序曲","ウェーバー／ファゴット協奏曲〈ウェーバー没後200年〉","ブラームス／交響曲第1番"],"ticket_url":"https://www.tpo.or.jp/concert/20270121-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-01-22","time":"19:00","venue":"サントリーホール","conductor":"山田和樹","program":["大栗裕：大阪俗謡による幻想曲","バルトーク：2台ピアノ、打楽器と管弦楽のための協奏曲","シューベルト／近衛秀麿：大交響曲 ハ長調"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/664-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-23","time":"14:00","venue":"ソニックシティ","conductor":"山下一史 バレエ","program":["チャイコフスキー：《エフゲニー・オネーギン》より「ポロネーズ」 ドヴォルジャーク：交響曲第8番 ト長調 op.88 B.","マーラー：交響曲第5番 嬰ハ短調より第4楽章 J.シュトラウスⅡ世：ポルカ・シュネル《雷鳴と電光》op.324* J.シ","チャイコフスキー：幻想序曲《ロメオとジュリエット》","ラヴェル：ボレロ*"],"ticket_url":"https://japanphil.or.jp/concert/20270123/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-01-25","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"ソフィー・デルヴォー","program":["モーツァルト／歌劇『魔笛』序曲","ウェーバー／ファゴット協奏曲〈ウェーバー没後200年〉","ブラームス／交響曲第1番"],"ticket_url":"https://www.tpo.or.jp/concert/20270125-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-01-28","time":"19:00","venue":"サントリーホール","conductor":"ハンナ・チャン","program":["グリンカ：歌劇「ルスランとリュドミラ」序曲","ラフマニノフ：パガニーニの主題による狂詩曲 作品43","ベルリオーズ：幻想交響曲 作品14"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/699.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-29","time":"19:00","venue":"東京芸術劇場","conductor":"カーチュン・ウォン","program":["ブルックナー：交響曲第8番 ハ短調 WAB108（ノヴァーク版）"],"ticket_url":"https://japanphil.or.jp/concert/20270129/"},{"orchestra":"読売日本交響楽団","date":"2027-01-30","time":"14:00","venue":"横浜みなとみらいホール","conductor":"ハンナ・チャン","program":["グリンカ：歌劇「ルスランとリュドミラ」序曲","ラフマニノフ：パガニーニの主題による狂詩曲 作品43","ベルリオーズ：幻想交響曲 作品14"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/156-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-30","time":"14:00","venue":"東京芸術劇場","conductor":"カーチュン・ウォン","program":["ブルックナー：交響曲第8番 ハ短調 WAB108（ノヴァーク版）"],"ticket_url":"https://japanphil.or.jp/concert/20270130/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-02-04","time":"19:00","venue":"豊洲シビックセンターホール（5階）","conductor":"","program":["ボロディン：弦楽六重奏曲 ニ短調","R.シュトラウス：歌劇「カプリッチョ」より前奏曲 シェーンベルク：浄夜 作品4"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=794&"},{"orchestra":"読売日本交響楽団","date":"2027-02-09","time":"19:30","venue":"TOPPANホール","conductor":"","program":["メンデルスゾーン：弦楽のための交響曲第7番 ニ短調","B.A.ツィンマーマン：弦楽オーケストラのための協奏曲","ベートーヴェン：「クロイツェル・ソナタ」 弦楽合奏版"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/53.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-02-10","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"出口大地","program":["ベートーヴェン／歌劇『フィデリオ』序曲","ベートーヴェン／ピアノ協奏曲第4番より第2楽章、第3楽章*","ハチャトゥリアン／バレエ音楽『ガイーヌ』よりバラの乙女の踊り～子守歌～剣の舞","ストラヴィンスキー／バレエ組曲『火の鳥』（1919年版）"],"ticket_url":"https://www.tpo.or.jp/concert/20270210-01.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-02-11","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"鈴木 秀美","program":["バッハ：シンフォニア ヘ長調 Wq.183-3","ハイドン：交響曲第82番 ハ長調 Hob.I:82「熊」","モーツァルト：交響曲第41番 ハ長調 K.551「ジュピター」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=753&"},{"orchestra":"読売日本交響楽団","date":"2027-02-13","time":"14:00","venue":"東京芸術劇場","conductor":"アニヤ・ビールマイアー","program":["リゲティ：ルーマニア協奏曲","シューマン：ピアノ協奏曲 イ短調 作品54","ブラームス：交響曲第2番 ニ長調 作品73"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/294.php"},{"orchestra":"読売日本交響楽団","date":"2027-02-14","time":"14:00","venue":"東京芸術劇場","conductor":"アニヤ・ビールマイアー","program":["リゲティ：ルーマニア協奏曲","シューマン：ピアノ協奏曲 イ短調 作品54","ブラームス：交響曲第2番 ニ長調 作品73"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/294-1.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-02-18","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"チョン・ミョンフン","program":["ベートーヴェン／ピアノ協奏曲第4番* 〈ベートーヴェン没後200年〉","サン=サーンス／交響曲第3番『オルガン付き』**"],"ticket_url":"https://www.tpo.or.jp/concert/20270218-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-02-19","time":"19:00","venue":"サントリーホール","conductor":"アニヤ・ビールマイアー","program":["ツィンマーマン：トランペット協奏曲 ハ長調「誰も知らない私の悩み」","バーバー：弦楽のためのアダージョ","ショスタコーヴィチ：交響曲第９番 変ホ長調 作品70"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/665-1.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-02-24","time":"19:00","venue":"サントリーホール 大ホール","conductor":"チョン・ミョンフン","program":["ベートーヴェン／ピアノ協奏曲第4番* 〈ベートーヴェン没後200年〉","サン=サーンス／交響曲第3番『オルガン付き』**"],"ticket_url":"https://www.tpo.or.jp/concert/20270224-01.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-02-27","time":"14:00","venue":"府中の森芸術劇場","conductor":"小林研一郎","program":["ドヴォルジャーク：チェロ協奏曲 ロ短調 op.104 ドヴォルジャーク：交響曲第9番《新世界より》ホ短調 op.95"],"ticket_url":"https://japanphil.or.jp/concert/20270227/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-03","time":"15:00","venue":"杉並公会堂","conductor":"藤岡幸夫","program":["ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20270303/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-03-06","time":"15:00","venue":"文京シビックホール 大ホール","conductor":"ケンショウ・ワタナベ","program":["プロコフィエフ／チェロと管弦楽のための交響的協奏曲（シンフォニア・コンチェルタンテ）*","プロコフィエフ／バレエ音楽『ロメオとジュリエット』より（ケンショウ・ワタナベセレクション）"],"ticket_url":"https://www.tpo.or.jp/concert/20270306-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-03-06","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ハンス・ロット：「ジュリアス・シーザー」への前奏曲","モーツァルト：ヴァイオリンとヴィオラのための協奏交響曲 変ホ長調 K. 364","マーラー：交響曲第1番 ニ長調「巨人」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/295.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-06","time":"14:00","venue":"横浜みなとみらいホール","conductor":"小林研一郎","program":["モーツァルト：フルートとハープのための協奏曲 ハ長調 K.299","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://japanphil.or.jp/concert/20270306/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-03-07","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"ケンショウ・ワタナベ","program":["プロコフィエフ／チェロと管弦楽のための交響的協奏曲（シンフォニア・コンチェルタンテ）より*","プロコフィエフ／バレエ音楽『ロメオとジュリエット』より（ケンショウ・ワタナベセレクション）"],"ticket_url":"https://www.tpo.or.jp/concert/20270307-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-03-07","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ハンス・ロット：「ジュリアス・シーザー」への前奏曲","モーツァルト：ヴァイオリンとヴィオラのための協奏交響曲 変ホ長調 K. 364","マーラー：交響曲第1番 ニ長調「巨人」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/295-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-03-11","time":"19:00","venue":"豊洲シビックセンター ホール（5階）","conductor":"","program":[],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=795&"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-12","time":"19:00","venue":"東京芸術劇場","conductor":"ピエタリ・インキネン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","R.シュトラウス：交響詩《英雄の生涯》 op.40"],"ticket_url":"https://japanphil.or.jp/concert/20270312/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-13","time":"14:00","venue":"東京芸術劇場","conductor":"ピエタリ・インキネン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","R.シュトラウス：交響詩《英雄の生涯》 op.40"],"ticket_url":"https://japanphil.or.jp/concert/20270313/"},{"orchestra":"読売日本交響楽団","date":"2027-03-19","time":"19:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ルディ・シュテファン：歌劇「最初の人類」(原典版／演奏会形式／日本初演)"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-704.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-20","time":"14:00","venue":"ソニックシティ","conductor":"藤岡幸夫","program":["ムソルグスキー：歌劇《ホヴァーンシチナ》より前奏曲「モスクワ河の夜明け」","モーツァルト：ピアノ協奏曲第26番《戴冠式》 ニ長調 K.537","チャイコフスキー：交響曲第4番 ヘ短調 op.36"],"ticket_url":"https://japanphil.or.jp/concert/20270320/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-03-20","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"高関 健","program":["マーラー：交響曲第3番 ニ短調"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=754&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-03-24","time":"19:00","venue":"すみだトリフォニーホール 大ホール","conductor":"高関 健","program":["ブルックナー：交響曲第8番 ハ短調 [第2稿（1890年）・新全集ポール・ホークショー校訂版（2025年）]"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=751&"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-27","time":"15:00","venue":"横浜みなとみらいホール","conductor":"カーチュン・ウォン","program":["ボロディン：歌劇《イーゴリ公》序曲","ハチャトゥリアン：ヴァイオリン協奏曲 ニ短調 ムソルグスキー（リムスキー=コルサコフ編曲）：交響詩《はげ山の一夜》","レスピーギ：交響詩《ローマの松》"],"ticket_url":"https://japanphil.or.jp/concert/20270327/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-04-02","time":"","venue":"新国立劇場オペラパレス","conductor":"パトリック・ハーン","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-04-21","time":"","venue":"新国立劇場オペラパレス","conductor":"マウリツィオ・ベニーニ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-05-01","time":"","venue":"新国立劇場オペラパレス","conductor":"マーティン・イェーツ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-05-16","time":"","venue":"新国立劇場オペラパレス","conductor":"アンドリー・ユルケヴィチ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-06-05","time":"","venue":"新国立劇場オペラパレス","conductor":"アレクセイ・バクラン","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-06-30","time":"","venue":"新国立劇場オペラパレス","conductor":"カルロ・リッツィ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"}]};
+  return {"scraped_at":"2026-08-29T14:30:09.169Z","total":227,"summary":[{"orchestra":"NHK交響楽団","count":9},{"orchestra":"東京フィルハーモニー交響楽団","count":36,"stale":true,"error":"取得0件"},{"orchestra":"東京交響楽団","count":19},{"orchestra":"東京都交響楽団","count":30},{"orchestra":"新日本フィルハーモニー交響楽団","count":9},{"orchestra":"読売日本交響楽団","count":47},{"orchestra":"日本フィルハーモニー交響楽団","count":52},{"orchestra":"東京シティ・フィルハーモニック","count":25}],"concerts":[{"orchestra":"NHK交響楽団","date":"2026-08-30","time":"16:00","venue":"刈谷市総合文化センター アイリス","conductor":"キンボー・イシイ","program":["ドビュッシー（ビュセール編）／小組曲","モーツァルト／ヴァイオリン協奏曲 第5番 イ長調 K. 219「トルコ風」","ビゼー／「カルメン」組曲（キンボー・イシイ版）"],"ticket_url":"https://www.nhkso.or.jp/concert/20260830.html?pdate=20260830"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-08-30","time":"17:00","venue":"サントリーホール 大ホール","conductor":"阿部 加奈子","program":["〇第34回芥川也寸志サントリー作曲賞受賞記念／サントリー芸術財団委嘱作品 石川健人：『嗅覚受容体』2台のキーボードとオーケストラのための（2026）［世界初演］ キーボード：秋山友貴／天野由唯 〇第36回芥川也寸志サントリー作曲賞候補作品（五十音順／演奏順未定） 金田望：2群のオーケストラのための『肌と布の遊び』（2024） 中橋祐紀：『And I sole ear（そして私はただ唯一の耳となる）』（2025） ソプラノ:日野祐希 エレクトロニクス:今井慎太郎 山本哲也：『戸外の鳥たちへのトリビュート』合唱と室内オーケストラのための（2025） 東京混声合唱団"],"ticket_url":"https://www.njp.or.jp/concerts/260830"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-08-30","time":"14:00","venue":"長野市芸術館","conductor":"松井慶太","program":["プロコフィエフ：組曲『ロミオとジュリエット』より モンタギュー家とキャピュレット家","ビゼー：アルルの女 第２組曲より メヌエット ムソルグスキー（ラヴェル編曲）：組曲『展覧会の絵』より 古城 加藤昌則：《","ドビュッシー：ラプソディ （サクソフォン・ソロ：上野耕平）","ラヴェル： ボレロ"],"ticket_url":"https://japanphil.or.jp/concert/20260830/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-08-30","time":"13:00","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/lecorsaire2026/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-01","time":"19:00","venue":"サントリーホール 大ホール","conductor":"大友直人","program":["バッハ：フーガ ト短調「小フーガ」 BWV578（オルガン独奏︓⻑井 浩美）","ベートーヴェン：ヴァイオリン協奏曲 ニ⻑調 op.61（ソリスト︓ 辻 彩奈）","ブラームス：交響曲第2番 ニ⻑調 op.73"],"ticket_url":"https://www.njp.or.jp/concerts/260901"},{"orchestra":"東京交響楽団","date":"2026-09-02","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"沼尻竜典","program":["ラヴェル：ピアノ協奏曲ト長調（小井土文哉）","シューマン：ピアノ協奏曲イ短調 op.54（谷 昂登）","ベートーヴェン：ピアノ協奏曲第4番ト長調 op.58（鈴木愛美）"],"ticket_url":"https://tokyosymphony.jp/concert/61423/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-02","time":"14:00","venue":"サントリーホール","conductor":"角田鋼亮","program":["サン=サーンス：序奏とロンド・カプリツィオーソ op.28 マスネ：タイスの瞑想曲 My Favorite Songs（","ベートーヴェン：交響曲第6番《田園》 ヘ長調 op.68"],"ticket_url":"https://japanphil.or.jp/concert/20260902/"},{"orchestra":"NHK交響楽団","date":"2026-09-03","time":"19:00","venue":"サントリーホール","conductor":"尾高忠明","program":["シベリウス／アンダンテ・フェスティーヴォ","プロコフィエフ／ヴァイオリン協奏曲 第2番 ト短調 作品63","チャイコフスキー／交響曲 第5番 ホ短調 作品64"],"ticket_url":"https://www.nhkso.or.jp/concert/20260903.html?pdate=20260903"},{"orchestra":"東京都交響楽団","date":"2026-09-03","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"大野和士","program":["ラフマニノフ：ピアノ協奏曲第3番 ニ短調 op.30","R.シュトラウス：交響詩《ドン・キホーテ》op.35*"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4088"},{"orchestra":"東京都交響楽団","date":"2026-09-04","time":"19:00","venue":"サントリーホール","conductor":"大野和士","program":["ラフマニノフ：ピアノ協奏曲第3番 ニ短調 op.30","R.シュトラウス：交響詩《ドン・キホーテ》op.35*"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4089"},{"orchestra":"NHK交響楽団","date":"2026-09-05","time":"15:00","venue":"仙台銀行ホール イズミティ21 大ホール","conductor":"尾高忠明","program":["シベリウス／アンダンテ・フェスティーヴォ","プロコフィエフ／ヴァイオリン協奏曲 第2番 ト短調 作品63","チャイコフスキー／交響曲 第5番 ホ短調 作品64"],"ticket_url":"https://www.nhkso.or.jp/concert/20260905.html?pdate=20260905"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-05","time":"14:00","venue":"サンパール荒川","conductor":"大井剛史","program":["シベリウス：ヴァイオリン協奏曲 ニ短調 ドヴォルジャーク：交響曲第9番《新世界より》 ホ短調"],"ticket_url":"https://japanphil.or.jp/concert/20260905/"},{"orchestra":"NHK交響楽団","date":"2026-09-06","time":"15:00","venue":"けんしん郡山文化センター 大ホール","conductor":"尾高忠明","program":["シベリウス／アンダンテ・フェスティーヴォ","プロコフィエフ／ヴァイオリン協奏曲 第2番 ト短調 作品63","チャイコフスキー／交響曲 第5番 ホ短調 作品64"],"ticket_url":"https://www.nhkso.or.jp/concert/20260906.html?pdate=20260906"},{"orchestra":"東京交響楽団","date":"2026-09-06","time":"11:00","venue":"サントリーホール","conductor":"","program":["プロコフィエフ：バレエ組曲「ロメオとジュリエット」から“モンタギュー家とキャピュレット家”*","グリーグ：抒情小品集 第9集から「ゆりかごの歌」（管弦楽版）","ストラヴィンスキー：バレエ組曲「火の鳥」から“王女たちのロンド”“魔王カスチェイの凶悪な踊り”","武満徹：波の盆 L.アンダ―ソン：セレナータ ファリャ：バレエ組曲「三角帽子」第2組曲から“粉屋の踊り”“終幕の踊り”"],"ticket_url":"https://tokyosymphony.jp/concert/58197/"},{"orchestra":"東京都交響楽団","date":"2026-09-06","time":"14:00","venue":"Hakuju Hall","conductor":"","program":["ロイター：5つの古い賛歌 Op.57 ヒンデミット：無伴奏ヴィオラ・ソナタ Op. 25-1 レフラー：夕べの調べ、白い月、ナイチンゲール 名田綾子：風の接線～メゾソプラノ、ヴィオラ、ピアノのための～ 詩：藤田晴央"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4153"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-06","time":"14:00","venue":"十文字チキンアンバーホール （久慈市文化会館） 大ホール","conductor":"永峰高志","program":["モーツァルト：ピアノ協奏曲第21番","ブルックナー：交響曲第4番「ロマンティック」"],"ticket_url":"https://www.njp.or.jp/concerts/260906"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-06","time":"14:00","venue":"東京芸術劇場","conductor":"大友直人","program":["モーツァルト：歌劇《皇帝ティートの慈悲》序曲 K.621","メンデルスゾーン：ヴァイオリン協奏曲 ホ短調 op.64","チャイコフスキー：ヴァイオリン協奏曲 ニ長調 op.35"],"ticket_url":"https://japanphil.or.jp/concert/20260906/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-08","time":"19:00","venue":"すみだトリフォニーホール 大ホール","conductor":"中田延亮","program":["第1部 渡辺貞夫カルテット 第2部 渡辺貞夫 meets 新日本フィル"],"ticket_url":"https://www.njp.or.jp/concerts/260908"},{"orchestra":"読売日本交響楽団","date":"2026-09-08","time":"19:00","venue":"サントリーホール","conductor":"ユライ・ヴァルチュハ","program":["マーラー：交響曲第6番 イ短調「悲劇的」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/661-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-09","time":"18:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-10","time":"18:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"東京都交響楽団","date":"2026-09-11","time":"19:00","venue":"東京芸術劇場 コンサートホール","conductor":"梅田俊明 ダンス","program":["グリーグ：組曲《ホルベアの時代より》 op.40 ラター：グローリア―混声合唱、金管楽器、打楽器とオルガンのための**","ラヴェル：組曲《マ・メール・ロワ》*[一部ダンス付き（演出振付／中尾洸太）]","ラヴェル：ボレロ*（演出振付／金森 穣）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4167"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-11","time":"14:00","venue":"すみだトリフォニーホール 大ホール","conductor":"沼尻竜典","program":["ラヴェル：組曲「マ・メール・ロワ」 Ravel:Ma mère l'Oye Suite","ラヴェル:クープランの墓（管弦楽版） Ravel:Le Tombeau de Couperin（orchestral s","ラヴェル：左手のためのピアノ協奏曲 ニ長調* Ravel:Le Concerto pour la main gauche","ラヴェル：「ダフニスとクロエ」第2組曲 Ravel:Daphnis et Chloé Suite No. 2"],"ticket_url":"https://www.njp.or.jp/concerts/260911"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-11","time":"19:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["ショスタコーヴィチ：交響曲第7番《レニングラード》 ハ長調 op.60"],"ticket_url":"https://japanphil.or.jp/concert/20260911/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-11","time":"18:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"NHK交響楽団","date":"2026-09-12","time":"18:00","venue":"NHKホール","conductor":"ファビオ・ルイージ","program":["― N響100年特別企画 ―","フランツ・シュミット／オラトリオ「7つの封印の書」（日本語字幕付き）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609A.html?pdate=20260912"},{"orchestra":"東京交響楽団","date":"2026-09-12","time":"11:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ロレンツォ・ヴィオッティ","program":["モーツァルト：交響曲 第38番 ニ長調 K. 504「プラハ」","シューベルト：交響曲 第2番 変ロ長調 D125"],"ticket_url":"https://tokyosymphony.jp/concert/59466/"},{"orchestra":"東京都交響楽団","date":"2026-09-12","time":"13:00","venue":"東京芸術劇場 プレイハウス","conductor":"","program":["サン＝サーンス：『動物の謝肉祭』より 「序奏と獅子王の行進曲」「象」「雌鶏と雄鶏」「亀」「化石」「白鳥」「終曲」 ワーク"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4173"},{"orchestra":"東京都交響楽団","date":"2026-09-12","time":"14:00","venue":"東京芸術劇場 シアターイースト","conductor":"","program":["エレナ・カッツ＝チェルニン（作曲）、スザンネ・フェリシタス・ヴォルフ（台本）：『しろくまの王さま ヴァレモンの物語』（日本語上演）"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202609"},{"orchestra":"東京都交響楽団","date":"2026-09-12","time":"15:00","venue":"東京芸術劇場 コンサートホール","conductor":"川瀬賢太郎","program":["すぎやまこういち：交響組曲『ドラゴンクエストⅤ』天空の花嫁 より「序曲のマーチ」 ロンビ：コペンハーゲンの蒸気機関車のギ","ビゼー：歌劇『カルメン』前奏曲 ♪指揮体験コーナー ロッシーニ：歌劇『セビリアの理髪師』序曲 ♪コンドルズによるダンス"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4168"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-12","time":"14:00","venue":"すみだトリフォニーホール 大ホール","conductor":"沼尻竜典","program":["ラヴェル：組曲「マ・メール・ロワ」 Ravel:Ma mère l'Oye Suite","ラヴェル:クープランの墓（管弦楽版） Ravel:Le Tombeau de Couperin（orchestral s","ラヴェル：左手のためのピアノ協奏曲 ニ長調* Ravel:Le Concerto pour la main gauche","ラヴェル：「ダフニスとクロエ」第2組曲 Ravel:Daphnis et Chloé Suite No. 2"],"ticket_url":"https://www.njp.or.jp/concerts/260912"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-12","time":"14:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["ショスタコーヴィチ：交響曲第7番《レニングラード》 ハ長調 op.60"],"ticket_url":"https://japanphil.or.jp/concert/20260912/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-12","time":"12:30","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"NHK交響楽団","date":"2026-09-13","time":"14:00","venue":"NHKホール","conductor":"ファビオ・ルイージ","program":["― N響100年特別企画 ―","フランツ・シュミット／オラトリオ「7つの封印の書」（日本語字幕付き）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609A.html?pdate=20260913"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-09-13","time":"14:00","venue":"Bunkamura オーチャードホール","conductor":"円光寺雅彦","program":["チャイコフスキー／ロココの主題による変奏曲*","ドヴォルザーク／交響曲第8番"],"ticket_url":"https://www.tpo.or.jp/concert/20260913-01.php"},{"orchestra":"東京交響楽団","date":"2026-09-13","time":"14:00","venue":"東京オペラシティコンサートホール","conductor":"ロレンツォ・ヴィオッティ","program":["モーツァルト：交響曲 第38番 ニ長調 K.504「プラハ」","シューベルト：交響曲 第2番 変ロ長調 D125"],"ticket_url":"https://tokyosymphony.jp/concert/57612/"},{"orchestra":"東京都交響楽団","date":"2026-09-13","time":"11:00","venue":"東京芸術劇場 コンサートホール","conductor":"川瀬賢太郎","program":["すぎやまこういち：交響組曲『ドラゴンクエストⅤ』天空の花嫁 より「序曲のマーチ」 ロンビ：コペンハーゲンの蒸気機関車のギ","ビゼー：歌劇『カルメン』前奏曲 ♪指揮体験コーナー ロッシーニ：歌劇『セビリアの理髪師』序曲 ♪コンドルズによるダンス"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4169"},{"orchestra":"東京都交響楽団","date":"2026-09-13","time":"13:00","venue":"東京芸術劇場 プレイハウス","conductor":"","program":["サン＝サーンス：『動物の謝肉祭』より 「序奏と獅子王の行進曲」「象」「雌鶏と雄鶏」「亀」「化石」「白鳥」「終曲」 ワーク"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4174"},{"orchestra":"東京都交響楽団","date":"2026-09-13","time":"14:00","venue":"東京芸術劇場 シアターイースト","conductor":"","program":["エレナ・カッツ＝チェルニン（作曲）、スザンネ・フェリシタス・ヴォルフ（台本）：『しろくまの王さま ヴァレモンの物語』（日本語上演"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202609"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-13","time":"13:30","venue":"佐渡中央文化会館（アミューズメント佐渡）","conductor":"","program":["エルガー：愛の挨拶ほか"],"ticket_url":"https://www.njp.or.jp/concerts/260913"},{"orchestra":"読売日本交響楽団","date":"2026-09-13","time":"14:00","venue":"横浜みなとみらいホール","conductor":"ユライ・ヴァルチュハ","program":["シベリウス：ヴァイオリン協奏曲 ニ短調 作品47","ショスタコーヴィチ：交響曲第10番 ホ短調 作品93"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/152-2.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-13","time":"13:00","venue":"新国立劇場オペラパレス","conductor":"","program":[],"ticket_url":"https://thetokyoballet.com/performance/swan2026/"},{"orchestra":"読売日本交響楽団","date":"2026-09-15","time":"19:00","venue":"サントリーホール","conductor":"ユライ・ヴァルチュハ","program":["シベリウス：ヴァイオリン協奏曲 ニ短調 作品47","ショスタコーヴィチ：交響曲第10番 ホ短調 作品93"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/695.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-15","time":"19:00","venue":"横浜みなとみらいホール 小ホール","conductor":"","program":["シューベルト：弦楽三重奏曲第1番 変ロ長調 D471 （扇谷・安達・門脇）","モーツァルト：ディヴェルティメント K.137 メンデルスゾーン（杉本哲也編曲）：「歌の翼に」","メンデルスゾーン：弦楽八重奏曲 変ホ長調 op.20 【第2部】トークイベント"],"ticket_url":"https://japanphil.or.jp/concert/20260915/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-16","time":"14:00","venue":"サントリーホール 大ホール","conductor":"渡邊一正","program":["シューベルト：交響曲第7番 ロ短調 D.759「未完成」","ベートーヴェン：交響曲第5番 ハ短調 op.67「運命」 ドヴォルジャーク：交響曲第9番 ホ短調 op.95「新世界より"],"ticket_url":"https://www.njp.or.jp/concerts/260916"},{"orchestra":"NHK交響楽団","date":"2026-09-17","time":"19:00","venue":"サントリーホール","conductor":"ファビオ・ルイージ","program":["ウェーバー／歌劇「オベロン」序曲","ブラームス／ヴァイオリン協奏曲 ニ長調 作品77","シューマン／交響曲 第4番 ニ短調 作品120（改訂版）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609B.html?pdate=20260917"},{"orchestra":"NHK交響楽団","date":"2026-09-18","time":"19:00","venue":"サントリーホール","conductor":"ファビオ・ルイージ","program":["ウェーバー／歌劇「オベロン」序曲","ブラームス／ヴァイオリン協奏曲 ニ長調 作品77","シューマン／交響曲 第4番 ニ短調 作品120（改訂版）"],"ticket_url":"https://www.nhkso.or.jp/concert/202609B.html?pdate=20260918"},{"orchestra":"東京交響楽団","date":"2026-09-19","time":"18:00","venue":"サントリーホール","conductor":"ロレンツォ・ヴィオッティ","program":["《東京交響楽団創立80周年記念》 シュミット：オラトリオ「７つの封印の書」"],"ticket_url":"https://tokyosymphony.jp/concert/57541/"},{"orchestra":"新日本フィルハーモニー交響楽団","date":"2026-09-19","time":"15:00","venue":"すみだトリフォニーホール 大ホール","conductor":"","program":["バッハ：2つのヴァイオリンのための協奏曲 ニ短調 BWV1043 マックス・リヒター：リコンポーズド・バイ・マックス・リ","ヴィヴァルディ「四季」 サラサーテ：ツィゴイネルワイゼン"],"ticket_url":"https://www.njp.or.jp/concerts/260919"},{"orchestra":"読売日本交響楽団","date":"2026-09-19","time":"14:00","venue":"東京芸術劇場","conductor":"ユライ・ヴァルチュハ","program":["グラズノフ：演奏会用ワルツ第１番 ニ長調 作品47","チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ラフマニノフ：交響的舞曲 作品45"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/290.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-19","time":"15:00","venue":"横浜みなとみらいホール","conductor":"オッコ・カム","program":["ラフマニノフ：ピアノ協奏曲第2番 ハ短調 op.18","ストラヴィンスキー：バレエ音楽《春の祭典》"],"ticket_url":"https://japanphil.or.jp/concert/20260919/"},{"orchestra":"NHK交響楽団","date":"2026-09-20","time":"15:00","venue":"あしかがフラワーパークプラザ（足利市民プラザ）・文化ホール","conductor":"ファビオ・ルイージ","program":["ウェーバー／歌劇「オベロン」序曲","ブラームス／ヴァイオリン協奏曲 ニ長調 作品77","シューマン／交響曲 第4番 ニ短調 作品120（改訂版）"],"ticket_url":"https://www.nhkso.or.jp/concert/20260920.html?pdate=20260920"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-09-20","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"三ツ橋敬子","program":["レスピーギ／交響詩『ローマの祭』","レスピーギ／交響詩『ローマの噴水』","レスピーギ／交響詩『ローマの松』"],"ticket_url":"https://www.tpo.or.jp/concert/20260920-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-09-20","time":"14:00","venue":"東京芸術劇場","conductor":"ユライ・ヴァルチュハ","program":["グラズノフ：演奏会用ワルツ第１番 ニ長調 作品47","チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ラフマニノフ：交響的舞曲 作品45"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/290-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-20","time":"15:00","venue":"杉並公会堂","conductor":"オッコ・カム","program":["ラフマニノフ：ピアノ協奏曲第2番 ハ短調 op.18","ストラヴィンスキー：バレエ音楽《春の祭典》"],"ticket_url":"https://japanphil.or.jp/concert/20260920/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-20","time":"14:00","venue":"すみだトリフォニーホール 大ホール","conductor":"渡邊 一正","program":["すぎやまこういち／交響組曲「ドラゴンクエストⅪ」過ぎ去りし時を求めて"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=737&"},{"orchestra":"東京交響楽団","date":"2026-09-21","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ロレンツォ・ヴィオッティ","program":["シュミット：オラトリオ「7つの封印の書」"],"ticket_url":"https://tokyosymphony.jp/concert/60855/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-21","time":"16:00","venue":"東京オペラシティ コンサートホール","conductor":"大友直人","program":["ヴェルディ「レクイエム」 指揮 大友直人","ヴェルディ：レクイエム"],"ticket_url":"https://www.tokyo-academy.com"},{"orchestra":"東京交響楽団","date":"2026-09-23","time":"14:00","venue":"府中の森芸術劇場どりーむホール","conductor":"大友直人","program":["ラフマニノフ：ピアノ協奏曲 第2番 ハ短調 作品18","ブラームス：交響曲 第4番 ホ短調 作品98"],"ticket_url":"https://tokyosymphony.jp/concert/60217/"},{"orchestra":"読売日本交響楽団","date":"2026-09-23","time":"17:00","venue":"長野県伊那文化会館 大ホール","conductor":"横山奏","program":["ロッシーニ：歌劇「ウィリアム・テル」序曲","メンデルスゾーン：ヴァイオリン協奏曲 ホ短調 作品64","チャイコフスキー：交響曲第5番 ホ短調 作品64"],"ticket_url":"https://yomikyo.or.jp/concert/2026/05/post-706.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-23","time":"14:00","venue":"調布市グリーンホール 大ホール","conductor":"渡邊 一正","program":["すぎやまこういち／交響組曲「ドラゴンクエストⅠ」交響組曲「ドラゴンクエストⅡ」悪霊の神々"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=738&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-09-25","time":"19:00","venue":"すみだトリフォニーホール 大ホール","conductor":"藤岡 幸夫","program":["マーラー：交響曲第1番 ニ長調「巨人」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=750&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-09-26","time":"15:00","venue":"文京シビックホール 大ホール","conductor":"川瀬賢太郎","program":["モーツァルト／ピアノ協奏曲第9番* ブルッフ／ヴァイオリン協奏曲第1番**","ドヴォルザーク／交響曲第8番"],"ticket_url":"https://www.b-academy.jp/access/"},{"orchestra":"東京交響楽団","date":"2026-09-26","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ユベール・スダーン","program":["メンデルスゾーン：序曲「フィンガルの洞窟」op.26","ショパン：ピアノ協奏曲 第2番 ヘ短調 op.21","メンデルスゾーン：交響曲 第4番 イ長調 op.90「イタリア」"],"ticket_url":"https://tokyosymphony.jp/concert/57655/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-26","time":"14:00","venue":"ソニックシティ","conductor":"小林研一郎","program":["ベルリオーズ：幻想交響曲 op.14"],"ticket_url":"https://japanphil.or.jp/concert/20260926/"},{"orchestra":"東京交響楽団","date":"2026-09-27","time":"17:00","venue":"りゅーとぴあ 新潟市民芸術文化会館 コンサートホール","conductor":"ユベール・スダーン","program":["メンデルスゾーン：序曲「フィンガルの洞窟」op.26","ショパン：ピアノ協奏曲 第2番 ヘ短調 op.21","メンデルスゾーン：交響曲 第4番 イ長調 op.90「イタリア」"],"ticket_url":"https://tokyosymphony.jp/concert/57793/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-09-27","time":"14:00","venue":"サントリーホール","conductor":"小林研一郎","program":["ベルリオーズ：幻想交響曲 op.14"],"ticket_url":"https://japanphil.or.jp/concert/20260927/"},{"orchestra":"読売日本交響楽団","date":"2026-09-30","time":"19:00","venue":"フェスティバルホール（大阪）","conductor":"ローター・ツァグロゼク","program":["R.シュトラウス：ヴァイオリン協奏曲 二短調 作品8","ブルックナー：交響曲第4番 変ホ長調 「ロマンティック」WAB104（1888年稿／コーストヴェット校訂版）"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/45-4.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-02","time":"","venue":"新国立劇場オペラパレス","conductor":"アレッサンドロ・ボナート","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"読売日本交響楽団","date":"2026-10-02","time":"19:00","venue":"サントリーホール","conductor":"ローター・ツァグロゼク","program":["R.シュトラウス：ヴァイオリン協奏曲 二短調 作品8","ブルックナー：交響曲第4番 変ホ長調 「ロマンティック」 WAB104（1888年稿／コーストヴェット校訂版）"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/662-1.php"},{"orchestra":"東京交響楽団","date":"2026-10-03","time":"14:00","venue":"東京オペラシティコンサートホール","conductor":"広上淳一","program":["ベルリオーズ：歌劇「ベアトリスとベネディクト」から序曲","ショパン：ピアノ協奏曲 第1番 ホ短調 op.11 ムソルグスキー（ラヴェル編）：組曲「展覧会の絵」"],"ticket_url":"https://tokyosymphony.jp/concert/57615/"},{"orchestra":"東京都交響楽団","date":"2026-10-03","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"ジョナサン・ノット","program":["メンデルスゾーン：序曲《フィンガルの洞窟》op.26 ブルッフ：スコットランド幻想曲 op.46*","ストラヴィンスキー：葬送の歌 op.5","スクリャービン：法悦の詩（交響曲第4番）op.54"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4091"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-04","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"角田鋼亮","program":["ワーグナー／歌劇『タンホイザー』序曲 ※10月5日（月）平日の午後のコンサートと同演目です"],"ticket_url":"https://www.tpo.or.jp/concert/20261004-01.php"},{"orchestra":"東京交響楽団","date":"2026-10-04","time":"15:30","venue":"Bunkamura オーチャードホール","conductor":"大井駿","program":[],"ticket_url":"https://tokyosymphony.jp/concert/61585/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-04","time":"14:00","venue":"アミューズメント佐渡","conductor":"齋藤友香理独奏","program":["グリーグ：組曲「ホルベアの時代より」～プレリュード","モーツァルト：ヴァイオリン協奏曲第3番 ト長調 K216（","バルトーク：ルーマニア民俗舞曲","バッハ：G線上のアリア","エルガー：愛の挨拶","チャイコフスキー：弦楽セレナーデ～第2楽章（ワルツ）","ベートーヴェン：交響曲第5番「運命」～第1楽章"],"ticket_url":"https://japanphil.or.jp/concert/20261004/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-05","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"角田鋼亮","program":["ワーグナー／歌劇『タンホイザー』序曲 ※10月4日（日）休日の午後のコンサートと同演目です"],"ticket_url":"https://www.tpo.or.jp/concert/20261005-01.php"},{"orchestra":"東京都交響楽団","date":"2026-10-09","time":"19:00","venue":"サントリーホール","conductor":"ジョナサン・ノット","program":["ベートーヴェン：ピアノ協奏曲第4番 ト長調 op.58","ブルックナー：交響曲第6番 イ長調 WAB106（ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4092"},{"orchestra":"読売日本交響楽団","date":"2026-10-09","time":"18:30","venue":"枚方市総合文化芸術センター 関西医大 大ホール","conductor":"小林研一郎","program":["ショパン：ピアノ協奏曲第1番 ホ短調 作品11","ドヴォルザーク：交響曲第9番 ホ短調 作品95 「新世界から」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/06/post-710.php"},{"orchestra":"東京交響楽団","date":"2026-10-10","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"ロレンツォ・ヴィオッティ","program":["ショスタコーヴィチ：交響曲 第10番 ホ短調 op.93 ※途中休憩なし"],"ticket_url":"https://tokyosymphony.jp/concert/57658/"},{"orchestra":"東京都交響楽団","date":"2026-10-10","time":"14:00","venue":"すみだトリフォニーホール","conductor":"ジョナサン・ノット","program":["ベートーヴェン：ピアノ協奏曲第4番 ト長調 op.58","ブルックナー：交響曲第6番 イ長調 WAB106（ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4093"},{"orchestra":"読売日本交響楽団","date":"2026-10-10","time":"17:30","venue":"愛媛県県民文化会館 メインホール","conductor":"小林研一郎","program":["ショパン：ピアノ協奏曲第1番 ホ短調 作品11","ドヴォルザーク：交響曲第9番 ホ短調 作品95 「新世界から」","【発売日】4月21日(火) 10時","【お申込み・お問い合わせ】","愛媛県県民文化会館 089-927-4777（平日9時－17時／発売初日は10時から販売）"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/-presents-2026.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-10-10","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"高関 健","program":["武満徹：夢の時","プロコフィエフ：ピアノ協奏曲第2番 ト短調 作品16 ムソルグスキー(ラヴェル編)：組曲「展覧会の絵」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=743&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-11","time":"14:00","venue":"長岡市立劇場 大ホール","conductor":"広上淳一","program":["ラヴェル／組曲『マ・メール・ロワ』","ラヴェル／ピアノ協奏曲*","ラヴェル／『ダニフスとクロエ』第1組曲、第2組曲"],"ticket_url":"https://www.tpo.or.jp/concert/20261011-01.php"},{"orchestra":"東京交響楽団","date":"2026-10-11","time":"14:00","venue":"サントリーホール","conductor":"ロレンツォ・ヴィオッティ","program":["ショスタコーヴィチ：交響曲 第10番 ホ短調 op.93 ※途中休憩なし"],"ticket_url":"https://tokyosymphony.jp/concert/57556/"},{"orchestra":"読売日本交響楽団","date":"2026-10-11","time":"18:30","venue":"三友サルビアホール 大ホール","conductor":"小林研一郎","program":["ショパン：ピアノ協奏曲第1番 ホ短調 作品11","ドヴォルザーク：交響曲第9番 ホ短調 作品95 「新世界から」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/06/post-711.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-11","time":"14:00","venue":"渡辺翁記念会館","conductor":"山下一史","program":["ブラームス：ヴァイオリン協奏曲 ニ長調 op.77","ブラームス：交響曲第1番 ハ短調 op.68"],"ticket_url":"https://japanphil.or.jp/concert/20261011/"},{"orchestra":"東京交響楽団","date":"2026-10-12","time":"14:00","venue":"よこすか芸術劇場","conductor":"ロレンツォ・ヴィオッティ","program":["ショスタコーヴィチ：交響曲 第10番 ホ短調 op.93 ※途中休憩なし"],"ticket_url":"https://tokyosymphony.jp/concert/60892/"},{"orchestra":"東京都交響楽団","date":"2026-10-12","time":"14:00","venue":"タクトホームこもれびGRAFAREホール（保谷こもれびホール）メインホール","conductor":"和田一樹","program":["すぎやまこういち：交響組曲『ドラゴンクエストⅤ』天空の花嫁 より「序曲のマーチ」","ビゼー：歌劇『カルメン』前奏曲 J.シュトラウス1世：ラデツキー行進曲 op.228 ♪指揮体験コーナー","ブラームス：ハンガリー舞曲第5番 ト短調 J.シュトラウス2世：ポルカ・シュネル《観光列車》 op.281♪みんなで一緒","ヴェルディ：歌劇『アイーダ』より「凱旋行進曲」"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202610"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-15","time":"19:00","venue":"サントリーホール 大ホール","conductor":"チョン・ミョンフン","program":["シベリウス／ヴァイオリン協奏曲*","ベートーヴェン／交響曲第7番"],"ticket_url":"https://www.tpo.or.jp/concert/20261015-01.php"},{"orchestra":"東京都交響楽団","date":"2026-10-15","time":"14:00","venue":"東大和市民会館ハミングホール","conductor":"山下一史","program":["ベートーヴェン：交響曲第5番 ハ短調 op.67《運命》"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202610"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-16","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"チョン・ミョンフン","program":["シベリウス／ヴァイオリン協奏曲*","ベートーヴェン／交響曲第7番"],"ticket_url":"https://www.tpo.or.jp/concert/20261016-01.php"},{"orchestra":"東京都交響楽団","date":"2026-10-16","time":"14:00","venue":"狛江エコルマホール","conductor":"山下一史","program":["ベートーヴェン：交響曲第5番 ハ短調 op.67《運命》"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202610"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-16","time":"19:00","venue":"サントリーホール","conductor":"山田和樹","program":["バルトーク：ヴァイオリン協奏曲第2番 BB117","チャイコフスキー：交響曲第6番《悲愴》 ロ短調 op.74"],"ticket_url":"https://japanphil.or.jp/concert/20261016/"},{"orchestra":"東京交響楽団","date":"2026-10-17","time":"14:00","venue":"ミューザ川崎シンフォニーホール","conductor":"出口大地","program":["チャイコフスキー：ピアノ協奏曲 第1番 変ロ短調 op.23","チャイコフスキー：交響曲 第6番 ロ短調 op.74「悲愴」"],"ticket_url":"https://tokyosymphony.jp/concert/57593/"},{"orchestra":"読売日本交響楽団","date":"2026-10-17","time":"14:00","venue":"東京芸術劇場","conductor":"レスリー・スガナンダラージャ","program":["ドヴォルザーク：歌劇「ルサルカ」から“ポロネーズ”","ショパン：ピアノ協奏曲第1番 ホ短調 作品11","シューマン：交響曲第3番 変ホ長調 作品97「ライン」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/291.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-17","time":"14:00","venue":"サントリーホール","conductor":"山田和樹","program":["バルトーク：ヴァイオリン協奏曲第2番 BB117","チャイコフスキー：交響曲第6番《悲愴》 ロ短調 op.74"],"ticket_url":"https://japanphil.or.jp/concert/20261017/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-10-17","time":"14:00","venue":"文京シビックホール 大ホール","conductor":"松村 優吾","program":["フォーレ：レクイエム","プッチーニ：ミサ曲"],"ticket_url":"https://www.kujira.org/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-18","time":"15:00","venue":"Bunkamura オーチャードホール","conductor":"チョン・ミョンフン","program":["シベリウス／ヴァイオリン協奏曲*","ベートーヴェン／交響曲第7番"],"ticket_url":"https://www.tpo.or.jp/concert/20261018-01.php"},{"orchestra":"東京交響楽団","date":"2026-10-18","time":"17:00","venue":"りゅーとぴあ 新潟市民芸術文化会館 コンサートホール","conductor":"出口大地","program":["チャイコフスキー：ピアノ協奏曲 第1番 変ロ短調 op.23","チャイコフスキー：交響曲 第6番 ロ短調 op.74「悲愴」"],"ticket_url":"https://tokyosymphony.jp/concert/57802/"},{"orchestra":"読売日本交響楽団","date":"2026-10-18","time":"14:00","venue":"東京芸術劇場","conductor":"レスリー・スガナンダラージャ","program":["ドヴォルザーク：歌劇「ルサルカ」から“ポロネーズ”","ショパン：ピアノ協奏曲第1番 ホ短調 作品11","シューマン：交響曲第3番 変ホ長調 作品97「ライン」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/291-1.php"},{"orchestra":"東京交響楽団","date":"2026-10-20","time":"19:00","venue":"サントリーホール","conductor":"大友直人","program":["ベートーヴェン：ピアノ協奏曲3番 ハ短調 Op.37 ヴォーン・ウィリアムズ：ドナ・ノビス・パーチェム"],"ticket_url":"https://tokyosymphony.jp/concert/61591/"},{"orchestra":"東京都交響楽団","date":"2026-10-21","time":"19:00","venue":"サントリーホール","conductor":"マルク・ミンコフスキ","program":["ブルックナー：交響曲第8番 ハ短調WAB108（1887年第1稿・ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4094"},{"orchestra":"東京都交響楽団","date":"2026-10-22","time":"19:00","venue":"サントリーホール","conductor":"マルク・ミンコフスキ","program":["ブルックナー：交響曲第8番 ハ短調WAB108（1887年第1稿・ノヴァーク版）"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4095"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-10-23","time":"","venue":"新国立劇場オペラパレス","conductor":"ティモシー・ブロック","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"読売日本交響楽団","date":"2026-10-23","time":"19:00","venue":"サントリーホール","conductor":"ジョヴァンニ・アントニーニ","program":["モーツァルト：交響曲第25番 ト短調 K. 183","シューマン：チェロ協奏曲 イ短調 作品129","モーツァルト：交響曲第40番 ト短調 K. 550"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/696.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-24","time":"14:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["チャイコフスキー：ピアノ協奏曲第1番 変ロ短調 op.23 ムソルグスキー（カーチュン・ウォン編曲）：組曲《展覧会の絵》"],"ticket_url":"https://japanphil.or.jp/concert/20261024/"},{"orchestra":"読売日本交響楽団","date":"2026-10-25","time":"14:00","venue":"横浜みなとみらいホール","conductor":"ジョヴァンニ・アントニーニ","program":["モーツァルト：交響曲第25番 ト短調 K. 183","シューマン：チェロ協奏曲 イ短調 作品129","モーツァルト：交響曲第40番 ト短調 K. 550"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/153-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-26","time":"19:00","venue":"サントリーホール","conductor":"小林研一郎","program":["チャイコフスキー：ロココ風の主題による変奏曲 イ長調 op.33 *","ラヴェル：《ボレロ》"],"ticket_url":"https://japanphil.or.jp/concert/20261026/"},{"orchestra":"東京都交響楽団","date":"2026-10-28","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"マルク・ミンコフスキ","program":["ラヴェル：ボレロ"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4096"},{"orchestra":"東京都交響楽団","date":"2026-10-29","time":"19:00","venue":"東京芸術劇場コンサートホール","conductor":"マルク・ミンコフスキ","program":["ラヴェル：ボレロ"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4097"},{"orchestra":"読売日本交響楽団","date":"2026-10-29","time":"19:30","venue":"TOPPANホール","conductor":"","program":["ヴィヴァルディ：弦楽のための協奏曲 ホ短調 RV134","テレマン：リコーダー協奏曲 ハ長調 TWV51:C1","タルティーニ：ヴァイオリン協奏曲 ホ短調 D.55","J.M. クラウス：劇音楽「オリンピー」序曲","ハイドン：交響曲第104番 二長調「ロンドン」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/52.php"},{"orchestra":"東京交響楽団","date":"2026-10-31","time":"11:00","venue":"ミューザ川崎シンフォニーホール","conductor":"太田 弦","program":["＜オール・モーツァルト・プログラム＞ 交響曲 第23番 ニ長調 K. 181(162b) ピアノ協奏曲 第20番 ニ短調 K. 466 交響曲 第35番 ニ長調 K. 385「ハフナー」"],"ticket_url":"https://tokyosymphony.jp/concert/59657/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-10-31","time":"15:00","venue":"横浜みなとみらいホール","conductor":"小林研一郎","program":["モーツァルト：ディヴェルティメント ニ長調 K.136","モーツァルト：協奏交響曲 変ホ長調（オーボエ、クラリネット、ホルン、ファゴットのための）K.297b","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://japanphil.or.jp/concert/20261031/"},{"orchestra":"東京交響楽団","date":"2026-11-01","time":"14:00","venue":"東京オペラシティコンサートホール","conductor":"大井剛史","program":["ドヴォルザーク：序曲「我が家」op.62 スメタナ：連作交響詩「我が祖国」"],"ticket_url":"https://tokyosymphony.jp/concert/57619/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-01","time":"14:00","venue":"東京芸術劇場","conductor":"小林研一郎","program":["モーツァルト：ディヴェルティメント ニ長調 K.136","モーツァルト：協奏交響曲 変ホ長調 （オーボエ、クラリネット、ホルン、ファゴットのための）K.297b","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://japanphil.or.jp/concert/20261101/"},{"orchestra":"東京都交響楽団","date":"2026-11-02","time":"19:00","venue":"ルーテル市ヶ谷ホール","conductor":"","program":["モーツァルト：弦楽四重奏曲 第10番 ハ長調 KV170","バルトーク：弦楽四重奏曲 第3番 Sz.85","ブラームス：弦楽四重奏曲 第1番 ハ短調 Op.51-1"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4187"},{"orchestra":"東京都交響楽団","date":"2026-11-03","time":"14:00","venue":"東京芸術劇場 コンサートホール","conductor":"梅田俊明","program":["モーツァルト：セレナード第13番 ト長調 Ｋ.525 《アイネ・クライネ・ナハトムジーク》","モーツァルト：交響曲第25番 ト短調 Ｋ.183（173dB）","モーツァルト：交響曲第41番 ハ長調 Ｋ.551 《ジュピター》"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"読売日本交響楽団","date":"2026-11-03","time":"15:00","venue":"めぐろパーシモンホール","conductor":"岡本陸","program":["ラフマニノフ：ピアノ協奏曲第2番 ハ短調 作品18","チャイコフスキー：交響曲第1番 ト短調 作品13「冬の日の幻想」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/03/post-698.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-05","time":"14:00","venue":"サントリーホール","conductor":"広上淳一","program":["モーツァルト:ヴァイオリンとヴィオラのための協奏交響曲 変ホ長調 K.364より 第3楽章 ロッシーニ:歌劇《ウィリアム","グリーグ：組曲《ホルベアの時代より》op.40 より 第1曲「前奏曲」、第4曲「アリア」、第5曲「リゴードン」","ラヴェル：ボレロ"],"ticket_url":"https://japanphil.or.jp/concert/20261105/"},{"orchestra":"東京都交響楽団","date":"2026-11-07","time":"14:00","venue":"どりーむホール","conductor":"小泉和裕","program":[],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"読売日本交響楽団","date":"2026-11-07","time":"16:00","venue":"盛岡市民文化ホール 大ホール","conductor":"海老原光","program":["チャイコフスキー：ピアノ協奏曲第1番 変ロ短調 作品23","チャイコフスキー：交響曲第5番 ホ短調 作品64"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-702.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-07","time":"14:00","venue":"ソニックシティ","conductor":"広上淳一","program":["チャイコフスキー：交響曲第5番 ホ短調 op.64"],"ticket_url":"https://japanphil.or.jp/concert/20261107/"},{"orchestra":"読売日本交響楽団","date":"2026-11-08","time":"16:00","venue":"タイハクホール名取(名取市文化会館) 大ホール","conductor":"海老原光","program":["チャイコフスキー：ピアノ協奏曲第1番 変ロ短調 作品23","チャイコフスキー：交響曲第5番 ホ短調 作品64"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-703.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-08","time":"14:00","venue":"大田区民ホール・アプリコ 大ホール","conductor":"藤岡幸夫","program":["ベートーヴェン：エグモント序曲 op.84 ヴァンハル：コントラバス協奏曲 二長調","モーツァルト：交響曲第41番 《ジュピター》ハ長調 K.551"],"ticket_url":"https://japanphil.or.jp/concert/20261108/"},{"orchestra":"東京都交響楽団","date":"2026-11-09","time":"19:00","venue":"ルーテル市ヶ谷ホール","conductor":"","program":["ドヴォルザーク：テルツェット ハ長調 Op.74 B.148* コダーイ：セレナーデ ヘ長調 Op.12*"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4203"},{"orchestra":"東京都交響楽団","date":"2026-11-09","time":"19:00","venue":"ヤマハホール","conductor":"","program":["バッハ：シャコンヌ","ドビュッシー：月の光 クレンゲル：2つの小品","バルトーク：ルーマニア民謡舞曲 ロジャーヌ：サウンドオブミュージックより ほか"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4205"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-11-12","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"原田 慶太楼","program":[],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=744&"},{"orchestra":"東京都交響楽団","date":"2026-11-13","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"準・メルクル","program":["ベートーヴェン：ピアノ協奏曲第5番 変ホ長調 op.73《皇帝》","ベートーヴェン：交響曲第3番 変ホ長調 op.55《英雄》"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4098"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-13","time":"19:00","venue":"サントリーホール","conductor":"小林研一郎","program":["スメタナ：連作交響詩《我が祖国》 ※第3曲と第4曲の間に20分の休憩が入ります"],"ticket_url":"https://japanphil.or.jp/concert/20261113/"},{"orchestra":"東京都交響楽団","date":"2026-11-14","time":"14:00","venue":"東京芸術劇場コンサートホール","conductor":"準・メルクル","program":["ベートーヴェン：ピアノ協奏曲第5番 変ホ長調 op.73《皇帝》","ベートーヴェン：交響曲第3番 変ホ長調 op.55《英雄》"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4099"},{"orchestra":"読売日本交響楽団","date":"2026-11-14","time":"14:30","venue":"取手市民会館","conductor":"藤岡幸夫","program":["チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ブラームス：交響曲第1番 ハ短調 作品68"],"ticket_url":"https://yomikyo.or.jp/concert/2026/07/-2026.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-14","time":"14:00","venue":"サントリーホール","conductor":"小林研一郎","program":["スメタナ：連作交響詩《我が祖国》 ※第3曲と第4曲の間に20分の休憩が入ります"],"ticket_url":"https://japanphil.or.jp/concert/20261114/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-15","time":"15:00","venue":"Bunkamura オーチャードホール","conductor":"ミハイル・プレトニョフ","program":["チャイコフスキー／交響曲第4番"],"ticket_url":"https://www.tpo.or.jp/concert/20261115-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-11-15","time":"16:00","venue":"りゅーとぴあ 新潟市民芸術文化会館 コンサートホール","conductor":"藤岡幸夫","program":["チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ブラームス：交響曲第1番 ハ短調 作品68"],"ticket_url":"https://yomikyo.or.jp/concert/2026/07/-2026-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-11-15","time":"14:00","venue":"サンシティホール 大ホール（越谷）","conductor":"渡邊 一正","program":["すぎやまこういち／交響組曲「ドラゴンクエストⅢ」そして伝説へ…"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=739&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-16","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"ミハイル・プレトニョフ","program":["チャイコフスキー／交響曲第4番"],"ticket_url":"https://www.tpo.or.jp/concert/20261116-01.php"},{"orchestra":"東京都交響楽団","date":"2026-11-16","time":"19:00","venue":"ムジカーザ","conductor":"","program":["ハイドン：弦楽四重奏曲 第77番 ハ長調 op.76-3《皇帝》","ショスタコーヴィチ：弦楽四重奏曲 第1番 ハ長調 op.49","シューベルト：弦楽四重奏曲 第13番 イ短調 D804《ロザムンデ》"],"ticket_url":"https://www.tmso.or.jp/j/concert/detail/detail.php?id=4200"},{"orchestra":"東京都交響楽団","date":"2026-11-17","time":"14:00","venue":"町田市民ホール","conductor":"横山 奏","program":["ベートーヴェン：序曲《コリオラン》 op.62","シューベルト：劇付随音楽《ロザムンデ》 D797 より 間奏曲第3番","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"読売日本交響楽団","date":"2026-11-17","time":"13:30","venue":"横浜みなとみらいホール","conductor":"藤岡幸夫","program":["チャイコフスキー：ヴァイオリン協奏曲 ニ長調 作品35","ブラームス：交響曲第1番 ハ短調 作品68"],"ticket_url":"https://yomikyo.or.jp/concert/2026/08/post-713.php"},{"orchestra":"東京都交響楽団","date":"2026-11-18","time":"14:00","venue":"プリモホールゆとろぎ（羽村市生涯学習センター）","conductor":"横山 奏","program":["ベートーヴェン：序曲《コリオラン》 op.62","シューベルト：劇付随音楽《ロザムンデ》 D797 より 間奏曲第3番","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://www.tmso.or.jp/j/concert/?ym=202611"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-21","time":"14:00","venue":"サントリーホール","conductor":"カーチュン・ウォン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","サン＝サーンス：交響曲第3番《オルガン付き》 ハ短調 op.78"],"ticket_url":"https://japanphil.or.jp/concert/20261121/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-22","time":"15:00","venue":"横浜みなとみらいホール","conductor":"カーチュン・ウォン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","サン＝サーンス：交響曲第3番《オルガン付き》 ハ短調 op.78"],"ticket_url":"https://japanphil.or.jp/concert/20261122/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-23","time":"","venue":"新国立劇場オペラパレス","conductor":"大野和士","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-23","time":"14:00","venue":"横浜能楽堂","conductor":"","program":["バッハ：無伴奏ヴァイオリンソナタ第2番《グラーヴェ》 ドホナーニ：弦楽三重奏のためのセレナードより第3楽章 能楽「嵐山」","武満徹：エア 能楽「山姥」より ペルト：スンマ（弦楽四重奏＋舞）","ラヴェル：弦楽四重奏曲より 他"],"ticket_url":"https://japanphil.or.jp/concert/20261123-14/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-23","time":"17:00","venue":"横浜能楽堂","conductor":"","program":["バッハ：無伴奏ヴァイオリンソナタ第2番《グラーヴェ》 ドホナーニ：弦楽三重奏のためのセレナードより第3楽章 能楽「嵐山」","武満徹：エア 能楽「山姥」より ペルト：スンマ（弦楽四重奏＋舞）","ラヴェル：弦楽四重奏曲より 他"],"ticket_url":"https://japanphil.or.jp/concert/20261123-17/"},{"orchestra":"読売日本交響楽団","date":"2026-11-24","time":"19:00","venue":"サントリーホール","conductor":"フランソワ＝グザヴィエ・ロト","program":["ヤナーチェク：狂詩曲「タラス・ブーリバ」","モーツァルト：交響曲第34番 ハ長調 K. 338","ヤナーチェク：シンフォニエッタ"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/697.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-11-25","time":"19:00","venue":"浜離宮朝日ホール","conductor":"ミシェル・ダルベルト","program":["モーツァルト：フィガロの結婚 K492より序曲","モーツァルト：ピアノ協奏曲第23番 イ長調 K488","モーツァルト：ピアノ協奏曲第24番 ハ短調 K491"],"ticket_url":"https://www.mozart.or.jp/concert/2710/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-26","time":"15:00","venue":"杉並公会堂","conductor":"松本宗利音","program":["メンデルスゾーン：ヴァイオリン協奏曲 ホ短調 op.64","ブラームス：交響曲第1番 ハ短調 op.68"],"ticket_url":"https://japanphil.or.jp/concert/20261126/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-11-29","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"円光寺雅彦","program":["ベートーヴェン／ピアノ協奏曲第3番* ポンキエッリ／歌劇『ラ・ジョコンダ』より「時の踊り」","チャイコフスキー／イタリア奇想曲"],"ticket_url":"https://www.tpo.or.jp/concert/20261129-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-11-29","time":"14:00","venue":"横浜みなとみらいホール","conductor":"フランソワ＝グザヴィエ・ロト","program":["マヌリ：サッカード 〜フルートとオーケストラのための","マーラー：交響曲第4番 ト長調「大いなる喜びへの賛歌」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/154-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-11-29","time":"14:00","venue":"ヤマハホール","conductor":"","program":["エルガー：弦楽セレナード ホ短調 Op.20 扇谷泰朋、田村昭博、太田麻衣、大貫聖子［Violin］ 江藤史織、中川裕美"],"ticket_url":"https://japanphil.or.jp/concert/20261129/"},{"orchestra":"読売日本交響楽団","date":"2026-11-30","time":"19:00","venue":"サントリーホール","conductor":"フランソワ＝グザヴィエ・ロト","program":["マヌリ：サッカード〜フルートとオーケストラのための","マーラー：交響曲第4番 ト長調「大いなる喜びへの賛歌」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/663-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-12-03","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"藤岡 幸夫","program":[],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=745&"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-04","time":"19:00","venue":"サントリーホール","conductor":"沖澤のどか","program":["ブラームス：交響曲第2番 ニ長調 op.73"],"ticket_url":"https://japanphil.or.jp/concert/20261204/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-05","time":"14:00","venue":"サントリーホール","conductor":"沖澤のどか","program":["ブラームス：交響曲第2番 ニ長調 op.73"],"ticket_url":"https://japanphil.or.jp/concert/20261205/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-06","time":"14:00","venue":"Bunkamura オーチャードホール","conductor":"挾間美帆","program":["マイルス・デイヴィス（ギル・エヴァンス編）／『スケッチ・オブ・スペイン』より、『ポーギーとベス』より チャイコフスキー（エリントン編）／バレエ組曲『くるみ割り人形』より ほか （オーケストレーション：挾間美帆） ※12月7日（月）平日の午後のコンサートと同演目です。"],"ticket_url":"https://www.tpo.or.jp/concert/20261206-01.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-06","time":"","venue":"新国立劇場オペラパレス","conductor":"阪 哲朗","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-07","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"挾間美帆","program":["マイルス・デイヴィス（ギル・エヴァンス編）／『スケッチ・オブ・スペイン』より、『ポーギーとベス』より チャイコフスキー（エリントン編）／バレエ組曲『くるみ割り人形』より ほか （オーケストレーション：挾間美帆） ※12月6日（日）渋谷の午後のコンサートと同演目です。"],"ticket_url":"https://www.tpo.or.jp/concert/20261207-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-12","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["《ゲーテの「ファウスト」の情景》","日本語字幕付原語［ドイツ語］上演","作曲：ロベルト・シューマン"],"ticket_url":"https://yomikyo.or.jp/concert/2026/05/post-707.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-13","time":"15:00","venue":"Bunkamura オーチャードホール","conductor":"尾高忠明","program":["ソプラノ：今井実希 アルト：中島郁子 テノール：伊藤達人 バリトン：上江隼人 合唱： 新国立劇場合唱団"],"ticket_url":"https://www.tpo.or.jp/concert/20261213-01.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-13","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["《ゲーテの「ファウスト」の情景》","日本語字幕付原語［ドイツ語］上演","作曲：ロベルト・シューマン"],"ticket_url":"https://yomikyo.or.jp/concert/2026/05/post-708.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-17","time":"19:00","venue":"フェスティバルホール（大阪）","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125 「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/46-2.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-18","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"尾高忠明","program":["ソプラノ：今井実希 アルト：中島郁子 テノール：伊藤達人 バリトン：上江隼人 合唱： 新国立劇場合唱団"],"ticket_url":"https://www.tpo.or.jp/concert/20261218-01.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-18","time":"","venue":"新国立劇場オペラパレス","conductor":"冨田実里ほか","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-18","time":"19:00","venue":"ソニックシティ","conductor":"阪哲朗","program":["ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261218/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2026-12-19","time":"19:00","venue":"サントリーホール 大ホール","conductor":"尾高忠明","program":["ソプラノ：今井実希 アルト：中島郁子 テノール：伊藤達人 バリトン：上江隼人 合唱： 新国立劇場合唱団"],"ticket_url":"https://www.tpo.or.jp/concert/20261219-01.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-19","time":"15:00","venue":"横浜みなとみらいホール","conductor":"阪哲朗","program":["バッハ：暁の星のいと美しきかな BWV739 羊は安らかに草を食み BWV208-9 トッカータとフーガ ニ短調 BWV","ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261219/"},{"orchestra":"読売日本交響楽団","date":"2026-12-20","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/292-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-20","time":"14:00","venue":"サントリーホール","conductor":"阪哲朗","program":["バッハ：暁の星のいと美しきかな BWV739 羊は安らかに草を食み BWV208-9 トッカータとフーガ ニ短調 BWV","ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261220/"},{"orchestra":"読売日本交響楽団","date":"2026-12-21","time":"19:00","venue":"サントリーホール","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-701.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-22","time":"19:00","venue":"サントリーホール","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/698.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-23","time":"19:00","venue":"東京芸術劇場","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261223/"},{"orchestra":"読売日本交響楽団","date":"2026-12-25","time":"19:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125 「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-700.php"},{"orchestra":"読売日本交響楽団","date":"2026-12-26","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/292.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-26","time":"14:00","venue":"横浜みなとみらいホール","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261226/"},{"orchestra":"読売日本交響楽団","date":"2026-12-27","time":"14:00","venue":"横浜みなとみらいホール","conductor":"セバスティアン・ヴァイグレ","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125 「合唱付き」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/155-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-27","time":"14:00","venue":"サントリーホール","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261227/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2026-12-28","time":"19:00","venue":"東京芸術劇場","conductor":"小林研一郎","program":["バッハ：前奏曲 ハ長調 BWV531 小フーガ ト短調 BWV578 トッカータとフーガ ニ短調 BWV565（以上3曲","ベートーヴェン：交響曲第9番《合唱》ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20261228/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-12-28","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"藤岡 幸夫","program":["ベートーヴェン：交響曲第9番 ニ短調 作品125「合唱付き」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=755&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2026-12-31","time":"22:00","venue":"東京オペラシティ コンサートホール","conductor":"井田 勝大","program":["すぎやまこういち：交響組曲「ドラゴンクエストⅦ」エデンの戦士たち"],"ticket_url":"https://www.cityphil.jp/concert/"},{"orchestra":"読売日本交響楽団","date":"2027-01-08","time":"19:00","venue":"東京芸術劇場","conductor":"沼尻竜典","program":["ビゼー：カルメン第１組曲","ラヴェル ：ピアノ協奏曲 ト長調","ブラームス：交響曲第４番 ホ短調 作品98"],"ticket_url":"https://yomikyo.or.jp/concert/2026/08/2027-no58.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-09","time":"15:00","venue":"横浜みなとみらいホール","conductor":"カーチュン・ウォン","program":["ハチャトゥリアン：組曲《仮面舞踏会》","ハイドン：トランペット協奏曲 変ホ長調 Hob.VIIe:1 J.シュトラウスⅡ世：喜歌劇《こうもり》序曲 J.シュトラ","ラヴェル：《ダフニスとクロエ》第2組曲"],"ticket_url":"https://japanphil.or.jp/concert/20270109/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-10","time":"14:00","venue":"東京芸術劇場","conductor":"カーチュン・ウォン","program":["ハチャトゥリアン：組曲《仮面舞踏会》","ハイドン：トランペット協奏曲 変ホ長調 Hob.VIIe:1 J.シュトラウスⅡ世：喜歌劇《こうもり》序曲 J.シュトラ","ラヴェル：《ダフニスとクロエ》第2組曲"],"ticket_url":"https://japanphil.or.jp/concert/20270110/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-01-11","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"藤岡 幸夫","program":["モーツァルト：オペラ「魔笛」より夜の女王のアリア“復讐の炎は地獄のように我が心に燃え”","ビゼー：オペラ「カルメン」より闘牛士の歌“諸君らの乾杯を喜んで受けよう”(加耒)","エルガー：行進曲「威風堂々」第1番 ほか"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=800&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-01-15","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"高関 健","program":["バルトーク：ハンガリーの風景 Sz.97","バルトーク：ヴァイオリン協奏曲第2番 Sz.112","ストラヴィンスキー：バレエ音楽「火の鳥」（1910年原典版）"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=752&"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-01-16","time":"15:00","venue":"文京シビックホール 大ホール","conductor":"小林研一郎","program":["チャイコフスキー／ヴァイオリン協奏曲*","ドヴォルザーク／交響曲第9番『新世界より』"],"ticket_url":"https://www.b-academy.jp/access/"},{"orchestra":"読売日本交響楽団","date":"2027-01-16","time":"14:00","venue":"東京芸術劇場","conductor":"原田慶太楼","program":["エルガー：チェロ協奏曲 ホ短調 作品85","ホルスト：組曲「惑星」 作品32"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/293.php"},{"orchestra":"読売日本交響楽団","date":"2027-01-17","time":"14:00","venue":"東京芸術劇場","conductor":"原田慶太楼","program":["エルガー：チェロ協奏曲 ホ短調 作品85","ホルスト：組曲「惑星」 作品32"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/293-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-17","time":"15:00","venue":"杉並公会堂","conductor":"広上淳一","program":["ドヴォルジャーク：チェロ協奏曲 ロ短調 op.104, B.191 大河ドラマ音楽特集"],"ticket_url":"https://japanphil.or.jp/concert/20270117/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-01-21","time":"19:00","venue":"サントリーホール 大ホール","conductor":"ソフィー・デルヴォー","program":["モーツァルト／歌劇『魔笛』序曲","ウェーバー／ファゴット協奏曲〈ウェーバー没後200年〉","ブラームス／交響曲第1番"],"ticket_url":"https://www.tpo.or.jp/concert/20270121-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-01-22","time":"19:00","venue":"サントリーホール","conductor":"山田和樹","program":["大栗裕：大阪俗謡による幻想曲","バルトーク：2台ピアノ、打楽器と管弦楽のための協奏曲","シューベルト／近衛秀麿：大交響曲 ハ長調"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/664-1.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-23","time":"14:00","venue":"ソニックシティ","conductor":"山下一史 バレエ","program":["チャイコフスキー：《エフゲニー・オネーギン》より「ポロネーズ」 ドヴォルジャーク：交響曲第8番 ト長調 op.88 B.","マーラー：交響曲第5番 嬰ハ短調より第4楽章 J.シュトラウスⅡ世：ポルカ・シュネル《雷鳴と電光》op.324* J.シ","チャイコフスキー：幻想序曲《ロメオとジュリエット》","ラヴェル：ボレロ*"],"ticket_url":"https://japanphil.or.jp/concert/20270123/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-01-25","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"ソフィー・デルヴォー","program":["モーツァルト／歌劇『魔笛』序曲","ウェーバー／ファゴット協奏曲〈ウェーバー没後200年〉","ブラームス／交響曲第1番"],"ticket_url":"https://www.tpo.or.jp/concert/20270125-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-01-28","time":"19:00","venue":"サントリーホール","conductor":"ハンナ・チャン","program":["グリンカ：歌劇「ルスランとリュドミラ」序曲","ラフマニノフ：パガニーニの主題による狂詩曲 作品43","ベルリオーズ：幻想交響曲 作品14"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/699.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-29","time":"19:00","venue":"東京芸術劇場","conductor":"カーチュン・ウォン","program":["ブルックナー：交響曲第8番 ハ短調 WAB108（ノヴァーク版）"],"ticket_url":"https://japanphil.or.jp/concert/20270129/"},{"orchestra":"読売日本交響楽団","date":"2027-01-30","time":"14:00","venue":"横浜みなとみらいホール","conductor":"ハンナ・チャン","program":["グリンカ：歌劇「ルスランとリュドミラ」序曲","ラフマニノフ：パガニーニの主題による狂詩曲 作品43","ベルリオーズ：幻想交響曲 作品14"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/156-2.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-01-30","time":"14:00","venue":"東京芸術劇場","conductor":"カーチュン・ウォン","program":["ブルックナー：交響曲第8番 ハ短調 WAB108（ノヴァーク版）"],"ticket_url":"https://japanphil.or.jp/concert/20270130/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-02-04","time":"19:00","venue":"豊洲シビックセンターホール（5階）","conductor":"","program":["ボロディン：弦楽六重奏曲 ニ短調","R.シュトラウス：歌劇「カプリッチョ」より前奏曲 シェーンベルク：浄夜 作品4"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=794&"},{"orchestra":"読売日本交響楽団","date":"2027-02-09","time":"19:30","venue":"TOPPANホール","conductor":"","program":["メンデルスゾーン：弦楽のための交響曲第7番 ニ短調","B.A.ツィンマーマン：弦楽オーケストラのための協奏曲","ベートーヴェン：「クロイツェル・ソナタ」 弦楽合奏版"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/53.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-02-10","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"出口大地","program":["ベートーヴェン／歌劇『フィデリオ』序曲","ベートーヴェン／ピアノ協奏曲第4番より第2楽章、第3楽章*","ハチャトゥリアン／バレエ音楽『ガイーヌ』よりバラの乙女の踊り～子守歌～剣の舞","ストラヴィンスキー／バレエ組曲『火の鳥』（1919年版）"],"ticket_url":"https://www.tpo.or.jp/concert/20270210-01.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-02-11","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"鈴木 秀美","program":["バッハ：シンフォニア ヘ長調 Wq.183-3","ハイドン：交響曲第82番 ハ長調 Hob.I:82「熊」","モーツァルト：交響曲第41番 ハ長調 K.551「ジュピター」"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=753&"},{"orchestra":"読売日本交響楽団","date":"2027-02-13","time":"14:00","venue":"東京芸術劇場","conductor":"アニヤ・ビールマイアー","program":["リゲティ：ルーマニア協奏曲","シューマン：ピアノ協奏曲 イ短調 作品54","ブラームス：交響曲第2番 ニ長調 作品73"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/294.php"},{"orchestra":"読売日本交響楽団","date":"2027-02-14","time":"14:00","venue":"東京芸術劇場","conductor":"アニヤ・ビールマイアー","program":["リゲティ：ルーマニア協奏曲","シューマン：ピアノ協奏曲 イ短調 作品54","ブラームス：交響曲第2番 ニ長調 作品73"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/294-1.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-02-18","time":"19:00","venue":"東京オペラシティ コンサートホール","conductor":"チョン・ミョンフン","program":["ベートーヴェン／ピアノ協奏曲第4番* 〈ベートーヴェン没後200年〉","サン=サーンス／交響曲第3番『オルガン付き』**"],"ticket_url":"https://www.tpo.or.jp/concert/20270218-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-02-19","time":"19:00","venue":"サントリーホール","conductor":"アニヤ・ビールマイアー","program":["ツィンマーマン：トランペット協奏曲 ハ長調「誰も知らない私の悩み」","バーバー：弦楽のためのアダージョ","ショスタコーヴィチ：交響曲第９番 変ホ長調 作品70"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/665-1.php"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-02-24","time":"19:00","venue":"サントリーホール 大ホール","conductor":"チョン・ミョンフン","program":["ベートーヴェン／ピアノ協奏曲第4番* 〈ベートーヴェン没後200年〉","サン=サーンス／交響曲第3番『オルガン付き』**"],"ticket_url":"https://www.tpo.or.jp/concert/20270224-01.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-02-27","time":"14:00","venue":"府中の森芸術劇場","conductor":"小林研一郎","program":["ドヴォルジャーク：チェロ協奏曲 ロ短調 op.104 ドヴォルジャーク：交響曲第9番《新世界より》ホ短調 op.95"],"ticket_url":"https://japanphil.or.jp/concert/20270227/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-03","time":"15:00","venue":"杉並公会堂","conductor":"藤岡幸夫","program":["ベートーヴェン：交響曲第9番《合唱》 ニ短調 op.125"],"ticket_url":"https://japanphil.or.jp/concert/20270303/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-03-06","time":"15:00","venue":"文京シビックホール 大ホール","conductor":"ケンショウ・ワタナベ","program":["プロコフィエフ／チェロと管弦楽のための交響的協奏曲（シンフォニア・コンチェルタンテ）*","プロコフィエフ／バレエ音楽『ロメオとジュリエット』より（ケンショウ・ワタナベセレクション）"],"ticket_url":"https://www.tpo.or.jp/concert/20270306-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-03-06","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ハンス・ロット：「ジュリアス・シーザー」への前奏曲","モーツァルト：ヴァイオリンとヴィオラのための協奏交響曲 変ホ長調 K. 364","マーラー：交響曲第1番 ニ長調「巨人」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/295.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-06","time":"14:00","venue":"横浜みなとみらいホール","conductor":"小林研一郎","program":["モーツァルト：フルートとハープのための協奏曲 ハ長調 K.299","ベートーヴェン：交響曲第7番 イ長調 op.92"],"ticket_url":"https://japanphil.or.jp/concert/20270306/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-03-07","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"ケンショウ・ワタナベ","program":["プロコフィエフ／チェロと管弦楽のための交響的協奏曲（シンフォニア・コンチェルタンテ）より*","プロコフィエフ／バレエ音楽『ロメオとジュリエット』より（ケンショウ・ワタナベセレクション）"],"ticket_url":"https://www.tpo.or.jp/concert/20270307-01.php"},{"orchestra":"読売日本交響楽団","date":"2027-03-07","time":"14:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ハンス・ロット：「ジュリアス・シーザー」への前奏曲","モーツァルト：ヴァイオリンとヴィオラのための協奏交響曲 変ホ長調 K. 364","マーラー：交響曲第1番 ニ長調「巨人」"],"ticket_url":"https://yomikyo.or.jp/concert/2026/01/295-1.php"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-03-11","time":"19:00","venue":"豊洲シビックセンター ホール（5階）","conductor":"","program":[],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=795&"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-12","time":"19:00","venue":"東京芸術劇場","conductor":"ピエタリ・インキネン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","R.シュトラウス：交響詩《英雄の生涯》 op.40"],"ticket_url":"https://japanphil.or.jp/concert/20270312/"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-13","time":"14:00","venue":"東京芸術劇場","conductor":"ピエタリ・インキネン","program":["ベートーヴェン：ピアノ協奏曲第5番《皇帝》 変ホ長調 op.73","R.シュトラウス：交響詩《英雄の生涯》 op.40"],"ticket_url":"https://japanphil.or.jp/concert/20270313/"},{"orchestra":"読売日本交響楽団","date":"2027-03-19","time":"19:00","venue":"東京芸術劇場","conductor":"セバスティアン・ヴァイグレ","program":["ルディ・シュテファン：歌劇「最初の人類」(原典版／演奏会形式／日本初演)"],"ticket_url":"https://yomikyo.or.jp/concert/2026/04/post-704.php"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-20","time":"14:00","venue":"ソニックシティ","conductor":"藤岡幸夫","program":["ムソルグスキー：歌劇《ホヴァーンシチナ》より前奏曲「モスクワ河の夜明け」","モーツァルト：ピアノ協奏曲第26番《戴冠式》 ニ長調 K.537","チャイコフスキー：交響曲第4番 ヘ短調 op.36"],"ticket_url":"https://japanphil.or.jp/concert/20270320/"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-03-20","time":"14:00","venue":"東京オペラシティ コンサートホール","conductor":"高関 健","program":["マーラー：交響曲第3番 ニ短調"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=754&"},{"orchestra":"東京シティ・フィルハーモニック管弦楽団","date":"2027-03-24","time":"19:00","venue":"すみだトリフォニーホール 大ホール","conductor":"高関 健","program":["ブルックナー：交響曲第8番 ハ短調 [第2稿（1890年）・新全集ポール・ホークショー校訂版（2025年）]"],"ticket_url":"https://www.cityphil.jp/concert/detail.php?id=751&"},{"orchestra":"日本フィルハーモニー交響楽団","date":"2027-03-27","time":"15:00","venue":"横浜みなとみらいホール","conductor":"カーチュン・ウォン","program":["ボロディン：歌劇《イーゴリ公》序曲","ハチャトゥリアン：ヴァイオリン協奏曲 ニ短調 ムソルグスキー（リムスキー=コルサコフ編曲）：交響詩《はげ山の一夜》","レスピーギ：交響詩《ローマの松》"],"ticket_url":"https://japanphil.or.jp/concert/20270327/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-04-02","time":"","venue":"新国立劇場オペラパレス","conductor":"パトリック・ハーン","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-04-21","time":"","venue":"新国立劇場オペラパレス","conductor":"マウリツィオ・ベニーニ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-05-01","time":"","venue":"新国立劇場オペラパレス","conductor":"マーティン・イェーツ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-05-16","time":"","venue":"新国立劇場オペラパレス","conductor":"アンドリー・ユルケヴィチ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-06-05","time":"","venue":"新国立劇場オペラパレス","conductor":"アレクセイ・バクラン","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"},{"orchestra":"東京フィルハーモニー交響楽団","date":"2027-06-30","time":"","venue":"新国立劇場オペラパレス","conductor":"カルロ・リッツィ","program":[],"ticket_url":"https://www.nntt.jac.go.jp/access/"}]};
 }
 
 // ── Orchestra metadata ──
+// 白地で判別でき、かつ主張しすぎない中明度の色。淡色地は色 + 透明度で作るため
+// CSS変数ではなく16進で持つ（var(--c0) では "var(--c0)1A" が不正値になる）。
 const ORCHES = [
-  { ja: 'NHK交響楽団',                  en: 'NHK Symphony',        short: 'NHK',   color: 'var(--c0)' },
-  { ja: '東京フィルハーモニー交響楽団',  en: 'Tokyo Phil',          short: 'TPO',   color: 'var(--c1)' },
-  { ja: '東京交響楽団',                  en: 'Tokyo Symphony',      short: 'TSO',   color: 'var(--c2)' },
-  { ja: '東京都交響楽団',                en: 'Tokyo Metro SO',      short: 'TMSO',  color: 'var(--c3)' },
-  { ja: '新日本フィルハーモニー交響楽団',en: 'New Japan Phil',      short: 'NJP',   color: 'var(--c4)' },
-  { ja: '読売日本交響楽団',              en: 'Yomiuri Nippon SO',   short: 'YNSO',  color: 'var(--c5)' },
-  { ja: '日本フィルハーモニー交響楽団',  en: 'Japan Phil',          short: 'JapPO', color: 'var(--c6)' },
-  { ja: '東京シティ・フィルハーモニック管弦楽団', en: 'Tokyo City Phil', short: 'TCPO', color: 'var(--c7)' },
+  { ja: 'NHK交響楽団',                  en: 'NHK Symphony',        short: 'NHK',   color: '#A8701C' },
+  { ja: '東京フィルハーモニー交響楽団',  en: 'Tokyo Phil',          short: 'TPO',   color: '#2F6293' },
+  { ja: '東京交響楽団',                  en: 'Tokyo Symphony',      short: 'TSO',   color: '#2C6E4B' },
+  { ja: '東京都交響楽団',                en: 'Tokyo Metro SO',      short: 'TMSO',  color: '#9C3A5C' },
+  { ja: '新日本フィルハーモニー交響楽団',en: 'New Japan Phil',      short: 'NJP',   color: '#5F4795' },
+  { ja: '読売日本交響楽団',              en: 'Yomiuri Nippon SO',   short: 'YNSO',  color: '#B0521F' },
+  { ja: '日本フィルハーモニー交響楽団',  en: 'Japan Phil',          short: 'JapPO', color: '#1C6E68' },
+  { ja: '東京シティ・フィルハーモニック管弦楽団', en: 'Tokyo City Phil', short: 'TCPO', color: '#97302F' },
 ];
 
 function getOrch(name) {
@@ -429,6 +538,15 @@ const T = {
     scrapedAt: at => `取得日時: ${new Date(at).toLocaleString('ja-JP')}`,
     weekdays: ['日','月','火','水','木','金','土'],
     months: m => `${m}月`,
+    navAbout: 'このサイトについて',
+    aboutTitle: 'Musikverein.Tokyo について',
+    aboutBody: [
+      '東京には、10のプロフェッショナル・オーケストラがあります。',
+      'ウィーンにも、ベルリンにも、ニューヨークにも、これほどの数はありません。毎晩どこかのホールで、世界水準の演奏が行われている。そんな都市は、世界にここだけです。',
+      'けれど、その事実はあまり知られていません。演奏会の情報は各楽団のサイトに散らばり、東京を訪れる音楽愛好家が全体を見渡す方法がありませんでした。',
+      'Musikverein.Tokyo は、東京のオーケストラ公演を一望できる場所です。',
+      '名前は、ウィーン楽友協会 <em>Gesellschaft der Musikfreunde</em> から採りました。音楽の友の集まり、という意味です。東京もまた、音楽の都であるという確信を込めて。',
+    ],
   },
   en: {
     filterLabel: 'Filter by orchestra',
@@ -446,6 +564,15 @@ const T = {
     scrapedAt: at => `Last updated: ${new Date(at).toLocaleString('en-US')}`,
     weekdays: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
     months: m => ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m] || m,
+    navAbout: 'About',
+    aboutTitle: 'About Musikverein.Tokyo',
+    aboutBody: [
+      'Tokyo is home to ten professional orchestras.',
+      'Not Vienna, not Berlin, not New York can claim as many. On any given evening, world-class performances take place across the city. No other place offers this.',
+      'Yet few people know it. Concert information is scattered across each orchestra\u2019s own website, leaving visitors no way to see the whole picture.',
+      'Musikverein.Tokyo brings Tokyo\u2019s orchestral performances together in one place.',
+      'The name comes from Vienna\u2019s <em>Gesellschaft der Musikfreunde</em>, the Society of Friends of Music, in the conviction that Tokyo, too, is a city of music.',
+    ],
   }
 };
 
@@ -468,9 +595,19 @@ function render() {
   document.getElementById('filter-label').textContent = L.filterLabel;
   document.getElementById('no-result-text').textContent = L.noResult;
   document.getElementById('footer-text').textContent = L.footer + (scrapedAt ? ' | ' + L.scrapedAt(scrapedAt) : '');
+  document.getElementById('subtitle-ja').style.display = lang === 'ja' ? 'block' : 'none';
   document.getElementById('subtitle-en').style.display = lang === 'en' ? 'block' : 'none';
   document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+  // About（本文は静的な自前テキストなので em を活かすため innerHTML で入れる）
+  document.getElementById('nav-about').textContent = L.navAbout;
+  document.getElementById('about-title').textContent = L.aboutTitle;
+  document.getElementById('about-body').innerHTML =
+    L.aboutBody.map((para, i) => `<p${i === 0 ? ' class="lead"' : ''}>${para}</p>`).join('');
+
+  // 支援技術と検索エンジンに正しい言語を伝える
+  document.documentElement.lang = lang;
 
   // Filter concerts
   const filtered = activeFilter === 'all'
@@ -532,12 +669,12 @@ function buildCard(c) {
 
   // Venue
   const venueText = c.venue
-    ? `<div class="detail-row"><span class="icon">🏛</span><span class="val">${esc(c.venue)}</span></div>`
-    : `<div class="detail-row"><span class="icon">🏛</span><span class="val muted">${T[lang].noVenue}</span></div>`;
+    ? `<div class="detail-row"><span class="icon">${T[lang].venue}</span><span class="val">${esc(c.venue)}</span></div>`
+    : `<div class="detail-row"><span class="icon">${T[lang].venue}</span><span class="val muted">${T[lang].noVenue}</span></div>`;
 
   // Conductor
   const conductorText = c.conductor
-    ? `<div class="detail-row"><span class="icon">🎼</span><span class="val">${esc(c.conductor)}</span></div>`
+    ? `<div class="detail-row"><span class="icon">${T[lang].conductor}</span><span class="val">${esc(c.conductor)}</span></div>`
     : '';
 
   // Program
@@ -549,7 +686,7 @@ function buildCard(c) {
 
   // Time
   const timeHtml = c.time
-    ? `<span class="concert-time">🕐 ${esc(c.time)}</span>`
+    ? `<span class="concert-time">${esc(c.time)}</span>`
     : '';
 
   // Ticket
@@ -566,7 +703,7 @@ function buildCard(c) {
     <div class="card-body">
       <div class="card-left">
         <div class="card-header">
-          <span class="orch-tag" style="background:${o.color}22;color:${o.color}">${esc(orchName)}</span>
+          <span class="orch-tag" style="background:${o.color}14;color:${o.color}">${esc(orchName)}</span>
           <div class="date-block">
             <span class="date-day">${day}</span>
             <span class="date-meta">${month}<br>${wd} ${year}</span>
