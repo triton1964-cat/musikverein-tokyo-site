@@ -509,6 +509,23 @@
   .about p em { font-style: italic; }
   .about .lead { font-size: 17.5px; letter-spacing: 0.05em; }
 
+  /* 本文の続きへの控えめな導線。グローバルナビには置かない */
+  .about-more {
+    margin-top: 3.2em;
+    text-align: center;
+  }
+  .about-more a {
+    font-family: var(--serif);
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 4px;
+    transition: color .2s, border-color .2s;
+  }
+  .about-more a:hover { color: var(--brand); border-bottom-color: var(--accent); }
+
   /* ── Back to top ── */
   /* 罫線と角丸2pxはチケットボタンと同じ調子。浮いた印象にならないよう
      地色は紙面と同じ生成りにし、影はごく薄く */
@@ -6165,6 +6182,7 @@
     <h2 id="about-title"></h2>
     <div class="about-rule"></div>
     <div id="about-body"></div>
+    <p class="about-more" id="about-more"><a href="vision/">私たちの考え</a></p>
   </div>
 </section>
 
@@ -6433,6 +6451,8 @@ function render() {
   document.getElementById('about-title').textContent = L.aboutTitle;
   document.getElementById('about-body').innerHTML =
     L.aboutBody.map((para, i) => `<p${i === 0 ? ' class="lead"' : ''}>${para}</p>`).join('');
+  // /vision は日本語のみのページ。英語表示では導線を出さない
+  document.getElementById('about-more').style.display = lang === 'ja' ? 'block' : 'none';
 
   // 支援技術と検索エンジンに正しい言語を伝える
   document.documentElement.lang = lang;
