@@ -44,6 +44,8 @@
 
     /* 読みやすい行長。日本語で 32〜38字におさまる幅 */
     --measure: 620px;
+    /* 扉の写真だけは本文より外へ広げる（左右の余白を含んだ外寸） */
+    --figure: 760px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -80,9 +82,16 @@
 
   /* ── Article ── */
   article {
-    max-width: var(--measure);
+    max-width: var(--figure);
     margin: 0 auto;
     padding: 88px 24px 0;
+  }
+
+  /* 見出しも本文も、写真の中に納まる 620px に戻す */
+  article > * {
+    max-width: var(--measure);
+    margin-left: auto;
+    margin-right: auto;
   }
 
   h1 {
@@ -114,6 +123,17 @@
 
   /* 段落のまとまりの切れ目に、句点ひとつぶんの間をとる */
   article p.break { margin-bottom: 3.4em; }
+
+  /* ── 扉の写真 ── */
+  .stage {
+    max-width: var(--figure);
+    margin: 0 auto 84px;
+  }
+  .stage img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 
   article strong {
     font-weight: 600;
@@ -178,6 +198,7 @@
     article p { font-size: 15px; line-height: 2.15; margin-bottom: 1.9em; text-align: left; }
     article p.break { margin-bottom: 3em; }
     .title-rule { margin-bottom: 52px; }
+    .stage { margin-bottom: 56px; }
     .signature { padding: 0 22px 72px; }
   }
 
@@ -198,6 +219,15 @@
 <article>
   <h1>なぜ今、東京の音楽を世界へ開くのか</h1>
   <div class="title-rule"></div>
+
+  <figure class="stage">
+    <picture>
+      <source srcset="../assets/stage.webp" type="image/webp">
+      <img src="../assets/stage.jpg"
+           alt="開演前の無人のステージ。椅子と譜面台が並び、手前に弦楽器が置かれている"
+           width="1600" height="900">
+    </picture>
+  </figure>
 
   <p>開演前のホールに座って、客席を見渡すことがあります。</p>
 
