@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="5EkLznejlgIRtiz8W6zjir9hZL6H8ffn7NOkgidxOQg">
 <title>Musikverein.Tokyo — 東京のオーケストラ公演情報</title>
-<meta name="description" content="東京の8つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。毎月、各楽団の公式サイトから自動で収集しています。">
+<meta name="description" content="東京の9つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。毎月、各楽団の公式サイトから自動で収集しています。">
 
 <link rel="canonical" href="https://musikverein.tokyo/">
 <link rel="alternate" hreflang="ja" href="https://musikverein.tokyo/">
@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Musikverein.Tokyo">
 <meta property="og:url" content="https://musikverein.tokyo/">
 <meta property="og:title" content="Musikverein.Tokyo — 東京のオーケストラ公演情報">
-<meta property="og:description" content="東京の8つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。">
+<meta property="og:description" content="東京の9つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。">
 <meta property="og:image" content="https://musikverein.tokyo/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -25,7 +25,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Musikverein.Tokyo — 東京のオーケストラ公演情報">
-<meta name="twitter:description" content="東京の8つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。">
+<meta name="twitter:description" content="東京の9つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。">
 <meta name="twitter:image" content="https://musikverein.tokyo/assets/og-image.png">
 <style>
   :root {
@@ -470,6 +470,24 @@
   .ticket-btn:hover { background: var(--brand); border-color: var(--brand); color: var(--bg); }
 
   /* ── About ── */
+  /* ロゴタイプは /vision と同じ実装を踏襲する（明版・同サイズ・同余白）。
+     リンクにはしないため :hover の指定は持ち込まない。
+     下の 88px は、/vision で article の padding が担っている
+     ロゴタイプと見出しの間隔をそのまま再現したもの */
+  .page-head {
+    padding: 56px 24px 88px;
+    text-align: center;
+  }
+
+  .page-head img {
+    display: block;
+    width: clamp(180px, 42vw, 232px);
+    height: auto;
+    margin: 0 auto;
+    opacity: .9;
+    transition: opacity .2s;
+  }
+
   .about {
     /* 追従するフィルタバーの下にアンカー先が潜り込まないように */
     scroll-margin-top: 72px;
@@ -6203,6 +6221,9 @@
 
 <section class="about" id="about">
   <div class="about-inner">
+    <div class="page-head">
+      <img src="assets/logo-horizontal.svg" alt="Musikverein.Tokyo" width="456" height="73">
+    </div>
     <h2 id="about-title"></h2>
     <div class="about-rule"></div>
     <div id="about-body"></div>
@@ -6336,7 +6357,7 @@ const T = {
       return `${f(from)} 〜 ${f(to)}の公演を掲載`;
     },
     metaTitle: 'Musikverein.Tokyo — 東京のオーケストラ公演情報',
-    metaDesc: '東京の8つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。毎月、各楽団の公式サイトから自動で収集しています。',
+    metaDesc: '東京の9つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。毎月、各楽団の公式サイトから自動で収集しています。',
     logoNote: 'ロゴに描かれているのは、ギリシア神話のムーサ九姉妹のひとり、音楽を司る女神エウテルペー。手にしているのは葦笛アウロスです。ウィーンのムジークフェライン黄金の間もまた、ムーサたちに見守られています。',
     aboutTitle: 'Musikverein.Tokyo について',
     aboutBody: [
@@ -6382,7 +6403,7 @@ const T = {
     },
     // 英語圏の検索を意識し、"Tokyo Classical Concerts" を先頭に置く
     metaTitle: 'Tokyo Classical Concerts — Musikverein.Tokyo',
-    metaDesc: 'Concert listings for Tokyo\u2019s eight professional orchestras. Search by venue, conductor or programme. Collected each month from the official website of each orchestra.',
+    metaDesc: 'Concert listings for Tokyo\u2019s nine professional orchestras. Search by venue, conductor or programme. Collected each month from the official website of each orchestra.',
     logoNote: 'The figure in our logo is Euterpe, the Muse of music and one of the nine sisters of Greek myth. In her hands, the reed pipes of the aulos. Vienna\u2019s own Musikverein \u2014 its Golden Hall \u2014 is likewise watched over by the Muses.',
     aboutTitle: 'About Musikverein.Tokyo',
     aboutBody: [
