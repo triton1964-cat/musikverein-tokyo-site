@@ -509,6 +509,30 @@
   .about p em { font-style: italic; }
   .about .lead { font-size: 17.5px; letter-spacing: 0.05em; }
 
+  /* ── ロゴの注記 ── */
+  /* 白ヌキ版は地色に沈むため、ここでも明版のシンボルを使う */
+  .about-mark {
+    margin: 4.2em auto 1.5em;
+    text-align: center;
+  }
+  .about-mark img {
+    display: block;
+    width: 88px;
+    height: auto;
+    margin: 0 auto;
+    opacity: .88;
+  }
+  .about .logo-note {
+    max-width: 40em;
+    margin: 0 auto;
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
   /* 本文の続きへの控えめな導線。グローバルナビには置かない */
   .about-more {
     margin-top: 3.2em;
@@ -6182,6 +6206,10 @@
     <h2 id="about-title"></h2>
     <div class="about-rule"></div>
     <div id="about-body"></div>
+    <div class="about-mark">
+      <img src="assets/symbol.svg" alt="" width="88" height="88">
+    </div>
+    <p class="logo-note" id="logo-note"></p>
     <p class="about-more" id="about-more"><a href="vision/">私たちの考え</a></p>
   </div>
 </section>
@@ -6309,6 +6337,7 @@ const T = {
     },
     metaTitle: 'Musikverein.Tokyo — 東京のオーケストラ公演情報',
     metaDesc: '東京の8つのプロフェッショナル・オーケストラの公演情報を一望できるガイド。会場・指揮者・曲目から検索できます。毎月、各楽団の公式サイトから自動で収集しています。',
+    logoNote: 'ロゴに描かれているのは、ギリシア神話のムーサ九姉妹のひとり、音楽を司る女神エウテルペー。手にしているのは葦笛アウロスです。ウィーンのムジークフェライン黄金の間もまた、ムーサたちに見守られています。',
     aboutTitle: 'Musikverein.Tokyo について',
     aboutBody: [
       '東京には、9つのプロフェッショナル・オーケストラがあります。日本オーケストラ連盟に加盟する、常設の楽団だけを数えてこの数です。',
@@ -6354,6 +6383,7 @@ const T = {
     // 英語圏の検索を意識し、"Tokyo Classical Concerts" を先頭に置く
     metaTitle: 'Tokyo Classical Concerts — Musikverein.Tokyo',
     metaDesc: 'Concert listings for Tokyo\u2019s eight professional orchestras. Search by venue, conductor or programme. Collected each month from the official website of each orchestra.',
+    logoNote: 'The figure in our logo is Euterpe, the Muse of music and one of the nine sisters of Greek myth. In her hands, the reed pipes of the aulos. Vienna\u2019s own Musikverein \u2014 its Golden Hall \u2014 is likewise watched over by the Muses.',
     aboutTitle: 'About Musikverein.Tokyo',
     aboutBody: [
       'Tokyo is home to nine professional orchestras \u2014 counting only the permanent ensembles that belong to the Association of Japanese Symphony Orchestras.',
@@ -6451,6 +6481,7 @@ function render() {
   document.getElementById('about-title').textContent = L.aboutTitle;
   document.getElementById('about-body').innerHTML =
     L.aboutBody.map((para, i) => `<p${i === 0 ? ' class="lead"' : ''}>${para}</p>`).join('');
+  document.getElementById('logo-note').textContent = L.logoNote;
   // /vision は日本語のみのページ。英語表示では導線を出さない
   document.getElementById('about-more').style.display = lang === 'ja' ? 'block' : 'none';
 
